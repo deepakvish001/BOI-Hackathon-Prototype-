@@ -11,6 +11,11 @@ alerts/tickets and preventing circulation of fraudulent proceeds through mule
 accounts. This solution should consume real-time regulatory inputs/feeds and
 cross-channel bank data."*
 
+**Submission bundle:** [`SUBMISSION.md`](SUBMISSION.md) ·
+[report (PDF)](docs/report/BODHI_Mule_Hunter_Prototype_Report.pdf) ·
+[deck (PPTX)](docs/BODHI_Mule_Hunter_Deck.pptx) ·
+[deck (PDF)](docs/BODHI_Mule_Hunter_Deck.pdf)
+
 ---
 
 ## What this is
@@ -120,8 +125,9 @@ Other targets:
 
 ```bash
 make demo         # narrated terminal walkthrough of a real detected ring
-make test         # 83 tests, ~25 s
+make test         # 85 tests, ~25 s
 make evaluate     # regenerate every number quoted above
+make submission   # rebuild the report (PDF/DOCX) and the deck (PPTX/PDF)
 ```
 
 ---
@@ -256,12 +262,18 @@ tests/                 83 tests including analytic-gradient checks
 docs/                  architecture, demo script, model card, report
 ```
 
-## Documentation
+## Documentation & submission artefacts
 
+- [`SUBMISSION.md`](SUBMISSION.md) — submission index, problem-statement coverage
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — design and the reasoning
 - [`docs/DEMO.md`](docs/DEMO.md) — the 5-minute judging walkthrough
 - [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) — intended use, limits, failure modes
-- [`docs/report/`](docs/report/) — the prototype report in the CyberShield template
+- [`docs/report/`](docs/report/) — prototype report as **PDF**, **DOCX** and LaTeX
+- [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) — 18-slide deck (also as PDF)
+
+Both documents are generated from `artifacts/metrics/evaluation.json` by
+`make submission`, so no number in them is typed by hand and they cannot drift
+from the code. The dashboard screenshots are captured from the running app.
 
 ## Limitations
 

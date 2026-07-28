@@ -31,6 +31,25 @@ sample-apk: setup  ## Build the APK fixtures used by the SHIELD demo
 demo: setup  ## Narrated end-to-end walkthrough in the terminal
 	$(BIN)/python scripts/demo_stream.py
 
+screenshots: setup  ## Capture the live dashboard (server must be running on :8090)
+	$(BIN)/python scripts/capture_screenshots.py
+
+report: setup  ## Build the prototype report (PDF + DOCX + LaTeX macros)
+	$(BIN)/python scripts/render_report_numbers.py
+	$(BIN)/python scripts/build_report_docx.py
+	$(BIN)/python scripts/build_report_pdf.py
+
+deck: setup  ## Build the submission deck (PPTX + PDF)
+	$(BIN)/python scripts/build_deck.py
+	$(BIN)/python scripts/build_deck_pdf.py
+
+submission: report deck  ## Everything the judges receive
+	@echo ""
+	@echo "Submission bundle:"
+	@ls -1sh docs/BODHI_Mule_Hunter_Deck.pptx docs/BODHI_Mule_Hunter_Deck.pdf \
+	         docs/report/BODHI_Mule_Hunter_Prototype_Report.pdf \
+	         docs/report/BODHI_Mule_Hunter_Prototype_Report.docx 2>/dev/null
+
 serve: setup  ## Start the API and investigator dashboard on :8000
 	$(BIN)/uvicorn bodhi.api.main:app --host 0.0.0.0 --port 8000
 
@@ -38,6 +57,8 @@ test: setup  ## Run the test suite
 	$(BIN)/python -m pytest tests -q
 
 all: data train sample-apk evaluate  ## Full pipeline from scratch
+
+.PHONY: screenshots report deck submission
 
 clean:  ## Remove generated artefacts (keeps metrics and figures)
 	rm -rf artifacts/data artifacts/models artifacts/runtime

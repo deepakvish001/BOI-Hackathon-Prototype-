@@ -14,6 +14,11 @@ artifacts/runtime/
 *.joblib
 *.ubj
 
+# Intermediate render targets for the report and the deck; the PDF/PPTX/DOCX
+# outputs beside them are committed.
+docs/_deck.html
+docs/report/_report.html
+
 # Keep evaluation outputs that the report cites
 !artifacts/metrics/
 !artifacts/figures/
