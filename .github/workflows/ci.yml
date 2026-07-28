@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyarrow
+
+      - name: Run the test suite
+        run: pytest tests -q
+
+      - name: Verify the pipeline end to end on a small world
+        run: |
+          python scripts/generate_data.py --accounts 2500 --days 45
+          python scripts/train.py --quiet
+          python scripts/make_sample_apk.py
+          python scripts/evaluate.py --no-lead-time --no-figures
+
+      - name: Check the API boots and serves
+        run: |
+          uvicorn bodhi.api.main:app --host 127.0.0.1 --port 8000 &
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:8000/api/health && break
+            sleep 3
+          done
+          curl -sf http://127.0.0.1:8000/api/health
+          curl -sf http://127.0.0.1:8000/api/overview > /dev/null
+          curl -sf "http://127.0.0.1:8000/api/alerts?limit=3" > /dev/null
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evaluation-metrics
+          path: artifacts/metrics/
+          if-no-files-found: ignore

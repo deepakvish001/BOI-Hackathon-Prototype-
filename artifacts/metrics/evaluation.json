@@ -1,0 +1,470 @@
+{
+  "generated_at": "2026-07-28T17:19:51.671671+00:00",
+  "dataset": {
+    "accounts": 12000,
+    "mule_accounts": 151,
+    "mule_rate": 0.01258,
+    "transactions": 834738,
+    "fraud_transactions": 2121,
+    "fraud_txn_rate": 0.00254,
+    "rings": 21,
+    "fraud_alerts": 281,
+    "iocs": 30,
+    "regulatory_items": 3,
+    "seed": 7,
+    "n_days": 120,
+    "sim_start": "2026-03-03T00:00:00+00:00",
+    "sim_end": "2026-07-01T00:00:00+00:00",
+    "oot_cut_ts": 1780272000.0,
+    "late_rings": 3
+  },
+  "headline": {
+    "roc_auc": 0.996634806972282,
+    "pr_auc": 0.970713591508775,
+    "precision_at_1pct": 0.9917,
+    "recall_at_1pct": 0.7881,
+    "false_positive_reduction_vs_rules": 0.99989,
+    "precision_uplift_x": 74.78,
+    "median_lead_hours": 11.47,
+    "p99_decision_latency_ms": 0.1132,
+    "ece": 0.00466
+  },
+  "layers": {
+    "XGBoost (L4)": {
+      "roc_auc": 0.9946210566851423,
+      "pr_auc": 0.9540180881799509,
+      "precision_at_005pct": 1.0,
+      "recall_at_005pct": 0.3974,
+      "precision_at_01pct": 0.9833,
+      "recall_at_01pct": 0.7815,
+      "precision_at_02pct": 0.6,
+      "recall_at_02pct": 0.9536,
+      "precision_at_05pct": 0.2467,
+      "recall_at_05pct": 0.9801,
+      "precision_at_1pct": 0.9833,
+      "recall_at_1pct": 0.7815
+    },
+    "GraphSAGE (L5)": {
+      "roc_auc": 0.9961943864265519,
+      "pr_auc": 0.948079281316488,
+      "precision_at_005pct": 1.0,
+      "recall_at_005pct": 0.3974,
+      "precision_at_01pct": 0.9833,
+      "recall_at_01pct": 0.7815,
+      "precision_at_02pct": 0.5875,
+      "recall_at_02pct": 0.9338,
+      "precision_at_05pct": 0.2467,
+      "recall_at_05pct": 0.9801,
+      "precision_at_1pct": 0.9833,
+      "recall_at_1pct": 0.7815
+    },
+    "TGN (L6)": {
+      "roc_auc": 0.9628314122688422,
+      "pr_auc": 0.8035927609542425,
+      "precision_at_005pct": 1.0,
+      "recall_at_005pct": 0.3974,
+      "precision_at_01pct": 0.8917,
+      "recall_at_01pct": 0.7086,
+      "precision_at_02pct": 0.5083,
+      "recall_at_02pct": 0.8079,
+      "precision_at_05pct": 0.2167,
+      "recall_at_05pct": 0.8609,
+      "precision_at_1pct": 0.8917,
+      "recall_at_1pct": 0.7086
+    },
+    "Intelligence": {
+      "roc_auc": 0.6883331591399279,
+      "pr_auc": 0.3774327580652892,
+      "precision_at_005pct": 0.8833,
+      "recall_at_005pct": 0.351,
+      "precision_at_01pct": 0.475,
+      "recall_at_01pct": 0.3775,
+      "precision_at_02pct": 0.2417,
+      "recall_at_02pct": 0.3841,
+      "precision_at_05pct": 0.1,
+      "recall_at_05pct": 0.3974,
+      "precision_at_1pct": 0.475,
+      "recall_at_1pct": 0.3775
+    },
+    "Fused (L7)": {
+      "roc_auc": 0.996634806972282,
+      "pr_auc": 0.970713591508775,
+      "precision_at_005pct": 1.0,
+      "recall_at_005pct": 0.3974,
+      "precision_at_01pct": 0.9917,
+      "recall_at_01pct": 0.7881,
+      "precision_at_02pct": 0.6125,
+      "recall_at_02pct": 0.9735,
+      "precision_at_05pct": 0.2483,
+      "recall_at_05pct": 0.9868,
+      "precision_at_1pct": 0.9917,
+      "recall_at_1pct": 0.7881
+    }
+  },
+  "calibration": {
+    "brier": 0.0012526555386289239,
+    "ece": 0.00466,
+    "bins": [
+      {
+        "bin": 0,
+        "n": 11755,
+        "mean_predicted": 0.0033,
+        "observed_rate": 0.0003
+      },
+      {
+        "bin": 1,
+        "n": 59,
+        "mean_predicted": 0.1837,
+        "observed_rate": 0.0339
+      },
+      {
+        "bin": 2,
+        "n": 42,
+        "mean_predicted": 0.2609,
+        "observed_rate": 0.0952
+      },
+      {
+        "bin": 6,
+        "n": 1,
+        "mean_predicted": 0.6704,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": 8,
+        "n": 32,
+        "mean_predicted": 0.8038,
+        "observed_rate": 0.9375
+      },
+      {
+        "bin": 9,
+        "n": 111,
+        "mean_predicted": 0.9992,
+        "observed_rate": 1.0
+      }
+    ]
+  },
+  "baseline": {
+    "rule_pack_size": 8,
+    "alerts": 9647,
+    "alert_rate": 0.80392,
+    "true_positives": 128,
+    "false_positives": 9519,
+    "precision": 0.0133,
+    "recall": 0.8477,
+    "bodhi_threshold_at_equal_recall": 89.654,
+    "bodhi_alerts_at_equal_recall": 129,
+    "bodhi_precision_at_equal_recall": 0.9922,
+    "bodhi_true_positives_at_equal_recall": 128,
+    "bodhi_false_positives_at_equal_recall": 1,
+    "bodhi_recall_at_equal_recall": 0.8477,
+    "false_positive_reduction": 0.99989,
+    "precision_uplift_x": 74.78,
+    "per_rule": [
+      {
+        "rule": "R07_NEW_ACCOUNT_TURNOVER",
+        "description": "Account under 90 days old with turnover above INR 2,00,000",
+        "fired": 77,
+        "true_positives": 23,
+        "false_positives": 54,
+        "precision": 0.2987,
+        "recall": 0.1523
+      },
+      {
+        "rule": "R01_HIGH_VALUE_FAN_IN",
+        "description": "Credits above INR 5,00,000 in 24h from more than 5 distinct payers",
+        "fired": 177,
+        "true_positives": 12,
+        "false_positives": 165,
+        "precision": 0.0678,
+        "recall": 0.0795
+      },
+      {
+        "rule": "R06_SHARED_DEVICE",
+        "description": "Device shared with more than 3 other accounts",
+        "fired": 9367,
+        "true_positives": 120,
+        "false_positives": 9247,
+        "precision": 0.0128,
+        "recall": 0.7947
+      },
+      {
+        "rule": "R04_STRUCTURING",
+        "description": "3 or more transfers in the INR 45,000-50,000 band",
+        "fired": 318,
+        "true_positives": 4,
+        "false_positives": 314,
+        "precision": 0.0126,
+        "recall": 0.0265
+      },
+      {
+        "rule": "R03_CASH_OUT",
+        "description": "More than 90% of credits withdrawn as cash",
+        "fired": 1447,
+        "true_positives": 5,
+        "false_positives": 1442,
+        "precision": 0.0035,
+        "recall": 0.0331
+      },
+      {
+        "rule": "R02_VELOCITY",
+        "description": "10 or more transactions inside a single hour",
+        "fired": 66,
+        "true_positives": 0,
+        "false_positives": 66,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      {
+        "rule": "R05_DORMANT_REACTIVATION",
+        "description": "No activity for 180 days followed by a transfer above INR 50,000",
+        "fired": 0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      {
+        "rule": "R08_NIGHT_ACTIVITY",
+        "description": "Over half of activity between 00:00 and 05:00 with turnover above INR 1,00,000",
+        "fired": 0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      }
+    ]
+  },
+  "thresholds": {
+    "40": {
+      "threshold": 40,
+      "alerts": 238,
+      "true_positives": 147,
+      "false_positives": 91,
+      "false_negatives": 4,
+      "true_negatives": 11758,
+      "precision": 0.6176,
+      "recall": 0.9735,
+      "f1": 0.7558,
+      "alert_rate": 0.01983
+    },
+    "55": {
+      "threshold": 55,
+      "alerts": 144,
+      "true_positives": 141,
+      "false_positives": 3,
+      "false_negatives": 10,
+      "true_negatives": 11846,
+      "precision": 0.9792,
+      "recall": 0.9338,
+      "f1": 0.9559,
+      "alert_rate": 0.012
+    },
+    "65": {
+      "threshold": 65,
+      "alerts": 144,
+      "true_positives": 141,
+      "false_positives": 3,
+      "false_negatives": 10,
+      "true_negatives": 11846,
+      "precision": 0.9792,
+      "recall": 0.9338,
+      "f1": 0.9559,
+      "alert_rate": 0.012
+    },
+    "85": {
+      "threshold": 85,
+      "alerts": 143,
+      "true_positives": 141,
+      "false_positives": 2,
+      "false_negatives": 10,
+      "true_negatives": 11847,
+      "precision": 0.986,
+      "recall": 0.9338,
+      "f1": 0.9592,
+      "alert_rate": 0.01192
+    }
+  },
+  "typology": [
+    {
+      "typology": "SMURFING",
+      "mules": 18,
+      "detected": 16,
+      "recall": 0.8889,
+      "median_score": 100.0
+    },
+    {
+      "typology": "role:CASHOUT",
+      "mules": 38,
+      "detected": 35,
+      "recall": 0.9211,
+      "median_score": 100.0
+    },
+    {
+      "typology": "FAN_IN_AGGREGATION",
+      "mules": 15,
+      "detected": 14,
+      "recall": 0.9333,
+      "median_score": 100.0
+    },
+    {
+      "typology": "LAYERING_CHAIN",
+      "mules": 59,
+      "detected": 58,
+      "recall": 0.9831,
+      "median_score": 100.0
+    },
+    {
+      "typology": "role:COLLECTOR",
+      "mules": 60,
+      "detected": 59,
+      "recall": 0.9833,
+      "median_score": 100.0
+    },
+    {
+      "typology": "APK_HARVEST",
+      "mules": 15,
+      "detected": 15,
+      "recall": 1.0,
+      "median_score": 100.0
+    },
+    {
+      "typology": "DEVICE_FARM",
+      "mules": 31,
+      "detected": 31,
+      "recall": 1.0,
+      "median_score": 100.0
+    },
+    {
+      "typology": "DORMANT_BURST",
+      "mules": 13,
+      "detected": 13,
+      "recall": 1.0,
+      "median_score": 100.0
+    },
+    {
+      "typology": "role:RELAY",
+      "mules": 53,
+      "detected": 53,
+      "recall": 1.0,
+      "median_score": 100.0
+    }
+  ],
+  "hard_negatives": [
+    {
+      "population": "legitimate_dormant_wake",
+      "n": 168,
+      "false_positives": 6,
+      "false_positive_rate": 0.0357,
+      "median_score": 9.21
+    },
+    {
+      "population": "community_collector",
+      "n": 107,
+      "false_positives": 3,
+      "false_positive_rate": 0.028,
+      "median_score": 7.62
+    },
+    {
+      "population": "ordinary_retail",
+      "n": 10504,
+      "false_positives": 81,
+      "false_positive_rate": 0.0077,
+      "median_score": 3.88
+    },
+    {
+      "population": "bc_agent_device_cluster",
+      "n": 302,
+      "false_positives": 1,
+      "false_positive_rate": 0.0033,
+      "median_score": 3.66
+    },
+    {
+      "population": "small_business_fan_in",
+      "n": 168,
+      "false_positives": 0,
+      "false_positive_rate": 0.0,
+      "median_score": 2.21
+    },
+    {
+      "population": "merchant",
+      "n": 600,
+      "false_positives": 0,
+      "false_positive_rate": 0.0,
+      "median_score": 2.49
+    }
+  ],
+  "independence_from_tickets": {
+    "mules_total": 151,
+    "mules_named_in_tickets": 53,
+    "mules_never_reported": 98,
+    "detected_total": 147,
+    "detected_never_reported": 94,
+    "share_of_detections_not_in_any_ticket": 0.6395,
+    "recall_on_never_reported_mules": 0.9592
+  },
+  "out_of_time": {
+    "late_rings": 3,
+    "late_ring_mules": 26,
+    "detected": 26,
+    "recall": 1.0,
+    "median_score": 100.0
+  },
+  "latency": {
+    "n": 2000,
+    "mean_ms": 0.06,
+    "p50_ms": 0.0542,
+    "p95_ms": 0.0944,
+    "p99_ms": 0.1132,
+    "max_ms": 0.4364,
+    "throughput_per_sec": 16677
+  },
+  "lead_time": {
+    "cuts_evaluated": 12,
+    "cut_spacing_hours": 91.6,
+    "grid_covers_final_fraction": 0.35,
+    "eligible_mules": 27,
+    "note": "Only mules whose first fraudulent transaction falls inside the cut grid are eligible; lead time is resolved to the cut spacing.",
+    "detected_within_grid": 27,
+    "detected_but_never_ticketed": 16,
+    "mules_with_ticket_and_detection": 11,
+    "detected_before_ticket": 6,
+    "detected_after_ticket": 5,
+    "share_detected_before_ticket": 0.5455,
+    "median_lead_hours": 11.47,
+    "mean_lead_hours": 28.38,
+    "p90_lead_hours": 128.76
+  },
+  "fusion_weights": {
+    "xgb": 0.5946,
+    "graph": 0.582,
+    "temporal": 0.009,
+    "intel": 0.155,
+    "max_logit": 0.4168
+  },
+  "figures": [
+    "roc_pr.png",
+    "calibration.png",
+    "typology_recall.png",
+    "alert_budget.png"
+  ],
+  "train_report": {
+    "n_accounts": 12000,
+    "n_mules": 151,
+    "split": {
+      "train": 6000,
+      "val": 1800,
+      "fuse": 1800,
+      "test": 2400
+    },
+    "features": 71,
+    "train_seconds": 78.76,
+    "graphsage_history": {
+      "epoch": 59,
+      "val_auc": 0.9952533581267892
+    },
+    "tgn_history": {
+      "epoch": 52,
+      "val_auc": 0.9518484989356757
+    }
+  }
+}

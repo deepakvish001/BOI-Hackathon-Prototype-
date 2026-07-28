@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bodhi-mule-hunter"
+version = "1.0.0"
+description = "Real-time mule account and fraud transaction detection with explainable graph AI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Team BODHI" }]
+keywords = ["fraud-detection", "anti-money-laundering", "graph-neural-networks",
+            "mule-accounts", "explainable-ai"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial",
+  "Intended Audience :: Financial and Insurance Industry",
+]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scipy>=1.11",
+  "scikit-learn>=1.4",
+  "xgboost>=2.0",
+  "networkx>=3.2",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "pydantic>=2.6",
+  "python-multipart>=0.0.9",
+  "matplotlib>=3.8",
+  "pyarrow>=14.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27"]
+
+[project.scripts]
+bodhi-generate = "scripts.generate_data:main"
+bodhi-train = "scripts.train:main"
+bodhi-evaluate = "scripts.evaluate:main"
+
+[tool.setuptools.packages.find]
+include = ["bodhi*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+  "ignore::DeprecationWarning:starlette.*",
+]
+
+[tool.ruff]
+line-length = 92
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501", "B008"]

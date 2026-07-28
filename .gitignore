@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Generated data & model binaries (regenerate with `make data && make train`)
+artifacts/data/
+artifacts/models/
+artifacts/runtime/
+*.parquet
+*.joblib
+*.ubj
+
+# Keep evaluation outputs that the report cites
+!artifacts/metrics/
+!artifacts/figures/
+
+.DS_Store
+.env

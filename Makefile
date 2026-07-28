@@ -1,0 +1,45 @@
+PY ?= python3
+VENV := .venv
+BIN := $(VENV)/bin
+
+.DEFAULT_GOAL := help
+.PHONY: help setup data train evaluate demo serve test sample-apk all clean lint
+
+help:  ## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	 | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
+
+$(BIN)/python:
+	$(PY) -m venv $(VENV)
+	$(BIN)/pip install -q --upgrade pip
+	$(BIN)/pip install -q -r requirements.txt
+
+setup: $(BIN)/python  ## Create the virtualenv and install dependencies
+
+data: setup  ## Simulate the bank (artifacts/data)
+	$(BIN)/python scripts/generate_data.py
+
+train: setup  ## Train all layers (artifacts/models)
+	$(BIN)/python scripts/train.py
+
+evaluate: setup  ## Evaluate and write artifacts/metrics/evaluation.json
+	$(BIN)/python scripts/evaluate.py
+
+sample-apk: setup  ## Build the APK fixtures used by the SHIELD demo
+	$(BIN)/python scripts/make_sample_apk.py
+
+demo: setup  ## Narrated end-to-end walkthrough in the terminal
+	$(BIN)/python scripts/demo_stream.py
+
+serve: setup  ## Start the API and investigator dashboard on :8000
+	$(BIN)/uvicorn bodhi.api.main:app --host 0.0.0.0 --port 8000
+
+test: setup  ## Run the test suite
+	$(BIN)/python -m pytest tests -q
+
+all: data train sample-apk evaluate  ## Full pipeline from scratch
+
+clean:  ## Remove generated artefacts (keeps metrics and figures)
+	rm -rf artifacts/data artifacts/models artifacts/runtime
+	find . -name __pycache__ -type d -prune -exec rm -rf {} +
+	rm -rf .pytest_cache

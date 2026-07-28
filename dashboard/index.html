@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BODHI MULE HUNTER AI - Investigator Console</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">B</div>
+    <div>
+      <h1>BODHI MULE HUNTER AI</h1>
+      <span>Real-time mule account &amp; fraud transaction detection</span>
+    </div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<nav class="tabs">
+  <button data-view="investigate" class="active">Investigate</button>
+  <button data-view="rings">Fraud rings</button>
+  <button data-view="live">Live scoring</button>
+  <button data-view="shield">BODHI Shield</button>
+  <button data-view="pipeline">Pipeline</button>
+  <button data-view="compliance">Compliance</button>
+</nav>
+
+<main>
+
+  <!-- ============ INVESTIGATE ============ -->
+  <section class="view active" id="view-investigate">
+    <div class="split">
+      <div class="card">
+        <h2>Alert queue <span class="count" id="queue-count">-</span></h2>
+        <div class="card-body tight">
+          <div class="queue" id="queue"><div class="loading"><div class="spin"></div>Scoring accounts…</div></div>
+        </div>
+      </div>
+
+      <div class="card" id="detail-card">
+        <h2>Case detail</h2>
+        <div id="detail"><div class="loading">Select an alert from the queue.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RINGS ============ -->
+  <section class="view" id="view-rings">
+    <div class="card">
+      <h2>Detected fraud rings <span class="count" id="rings-count">-</span></h2>
+      <div class="card-body tight"><div id="rings-table"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ LIVE ============ -->
+  <section class="view" id="view-live">
+    <div class="grid2">
+      <div class="card">
+        <h2>Inline transaction decision</h2>
+        <div class="card-body">
+          <p class="muted" style="margin-top:0">
+            Score a payment the way a core banking system would, in the authorisation path.
+            Both parties' standing risk is already cached, so the online step is a
+            combination rather than a graph traversal.
+          </p>
+          <div class="actions-row">
+            <button class="act primary" id="btn-live-random">Score a random live payment</button>
+            <button class="act" id="btn-live-mule">Score a payment into a flagged account</button>
+            <button class="act" id="btn-live-burst">Replay a 25-payment burst</button>
+          </div>
+          <pre class="out" id="live-out">Awaiting a request…</pre>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Decision log</h2>
+        <div class="card-body tight"><div id="live-log"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SHIELD ============ -->
+  <section class="view" id="view-shield">
+    <div class="grid2">
+      <div class="card">
+        <h2>APK static triage</h2>
+        <div class="card-body">
+          <p class="muted" style="margin-top:0">
+            Upload an Android package. The manifest string pool is parsed, permission
+            combinations are scored, and the DEX is mined for UPI handles, bank details
+            and command-and-control endpoints. Everything financial it finds is pushed
+            straight into the Mule Hunter graph.
+          </p>
+          <div class="drop" id="drop">
+            <div style="font-size:26px;margin-bottom:8px">&#128241;</div>
+            Drop an <b>.apk</b> here, or
+            <input type="file" id="apk-file" accept=".apk,.zip" style="margin-top:8px">
+          </div>
+          <div class="spacer"></div>
+          <button class="act primary" id="btn-shield-sample">Analyse a bundled trojan sample</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Triage report</h2>
+        <div class="card-body"><div id="shield-out" class="muted">No sample analysed yet.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PIPELINE ============ -->
+  <section class="view" id="view-pipeline">
+    <div class="grid2">
+      <div class="card">
+        <h2>Agent topology</h2>
+        <div class="card-body"><div id="agents"></div></div>
+      </div>
+      <div class="card">
+        <h2>Model performance</h2>
+        <div class="card-body"><div id="metrics"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPLIANCE ============ -->
+  <section class="view" id="view-compliance">
+    <div class="grid2">
+      <div class="card">
+        <h2>Tamper-evident audit chain</h2>
+        <div class="card-body"><div id="audit"></div></div>
+      </div>
+      <div class="card">
+        <h2>Cash transactions above the reporting threshold</h2>
+        <div class="card-body tight"><div id="ctr"></div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
