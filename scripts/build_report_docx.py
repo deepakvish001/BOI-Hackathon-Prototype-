@@ -720,6 +720,15 @@ def main() -> int:
         r = p.add_run(f"[{i}]  {ref}")
         r.font.size = Pt(8)
 
+    # python-docx otherwise stamps itself as the author of the file.
+    cp = doc.core_properties
+    cp.title = ("BODHI MULE HUNTER AI: Explainable Graph-Temporal Detection of "
+                "Money-Mule Accounts and Suspicious Transactions")
+    cp.author = ", ".join(mem.name for mem in TEAM)
+    cp.last_modified_by = TEAM_NAME
+    cp.comments = f"{TEAM_NAME} - {EVENT}"
+    cp.category = EVENT
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     doc.save(OUT)
     print(f"Wrote {OUT}")

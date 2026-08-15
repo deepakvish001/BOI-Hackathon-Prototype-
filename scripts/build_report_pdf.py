@@ -50,6 +50,32 @@ def _chrome() -> str:
     raise RuntimeError("no Chromium/Chrome binary found for PDF rendering")
 
 
+def _stamp_pdf(path: Path, title: str) -> None:
+    """Give the rendered PDF proper document properties.
+
+    Chromium names the file after the HTML it rendered ("_report.html"), which
+    is what a reader sees in their PDF viewer's title bar. Rewriting the
+    metadata is cosmetic but it is the difference between a submission that
+    looks assembled and one that looks exported.
+    """
+    try:
+        import fitz  # PyMuPDF
+    except ImportError:
+        return
+    doc = fitz.open(path)
+    doc.set_metadata({
+        "title": title,
+        "author": ", ".join(mem.name for mem in TEAM),
+        "subject": f"{TEAM_NAME} - {EVENT}",
+        "keywords": "money mule detection, graph neural networks, "
+                    "temporal graph networks, explainable AI, anti-money laundering",
+        "creator": TEAM_NAME,
+        "producer": TEAM_NAME,
+    })
+    doc.saveIncr()
+    doc.close()
+
+
 def _img(path: Path, width: str = "100%") -> str:
     if not path.exists():
         return ""
@@ -758,6 +784,8 @@ def main() -> int:
         f"--print-to-pdf={OUT_PDF}", OUT_HTML.as_uri(),
     ], check=True, capture_output=True)
 
+    _stamp_pdf(OUT_PDF, "BODHI MULE HUNTER AI: Explainable Graph-Temporal Detection of "
+        "Money-Mule Accounts and Suspicious Transactions")
     print(f"PDF   -> {OUT_PDF}  ({OUT_PDF.stat().st_size // 1024} KB)")
     return 0
 
