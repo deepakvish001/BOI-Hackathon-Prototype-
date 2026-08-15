@@ -20,6 +20,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from repo_stats import code_lines_short, test_count  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
     AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
@@ -126,7 +129,7 @@ li::before { content: "●"; color: #4da3ff; font-size: 8pt; margin-top: 5pt; }
 """
 
 
-def slide(inner: str, n: int | None = None, total: int = 18,
+def slide(inner: str, n: int | None = None, total: int = 19,
           note: str = "") -> str:
     foot = ""
     if n is not None:
@@ -152,7 +155,7 @@ def build(m: dict) -> str:
     typ = {t["typology"]: t for t in m["typology"]}
     F = L["Fused (L7)"]
     S: list[str] = []
-    N = 18
+    N = 19
     authors = "".join(
         f'<div><div style="font-size:13pt;font-weight:600">{mem.name}</div>'
         f'<div class="mono faint" style="font-size:10.5pt">{mem.enrolment}</div></div>'
@@ -613,7 +616,62 @@ def build(m: dict) -> str:
         </div>
       </div>''', 16, N))
 
-    # 17 limitations
+    # 17 their dataset
+    boi_path = METRICS_DIR / "boi_track.json"
+    if boi_path.exists():
+        bm = json.loads(boi_path.read_text())
+        bd, bdep, bleak = bm["dataset"], bm["deployable"], bm["leakage_effect"]
+        bcv, bhold = bdep["cv"], bdep["holdout"]
+        bsel = bcv[bdep["selected_strategy"]]
+        brows = "".join(
+            f'<tr><td>{label}</td><td>{_n(bcv[k]["n_features"])}</td>'
+            f'<td>{bcv[k]["roc_auc"]:.3f}</td><td>{bcv[k]["pr_auc"]:.3f}</td></tr>'
+            for k, label in [("bank_finalized", "Bank's 18 finalised"),
+                             ("bank_plus_engineered", "Bank + engineered"),
+                             ("auto_topk", "Automatic top-<i>k</i>"),
+                             ("all", "Every column")] if k in bcv)
+        S.append(slide(head("Their dataset",
+            "Built on the schema they published",
+            f"{_n(bd['declared_columns'])} declared columns, one row per alert. The "
+            f"names are machine-generated from a grammar, so we parse them instead of "
+            f"treating them as opaque.") + f'''
+      <div class="body row" style="align-items:stretch">
+        <div class="col panel2" style="border-color:#ff4d5e;border-width:1.5pt">
+          <div class="plabel red">Four columns leak the label</div>
+          <div class="dim" style="font-size:12.5pt;line-height:1.4;margin-bottom:16pt">
+            <b style="color:#e6edf7">FRAUD_SUSPECTED · FALSE_POSITIVE ·
+            OTHER_RESOLUTION · UNATTENDED</b> are resolution-status flags &mdash;
+            how an analyst <i>closed</i> the alert. An open alert has none of them.</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10pt">
+            <span class="dim" style="font-size:12.5pt">PR-AUC, quarantined (deployable)</span>
+            <span class="green mono" style="font-size:16pt;font-weight:700">{bleak['pr_auc_deployable']:.3f}</span></div>
+          <div style="display:flex;justify-content:space-between">
+            <span class="dim" style="font-size:12.5pt">PR-AUC, resolution columns admitted</span>
+            <span class="red mono" style="font-size:16pt;font-weight:700">{bleak['pr_auc_with_leakage']:.3f}</span></div>
+        </div>
+        <div class="col">
+          <div class="plabel">Four strategies, selection inside every fold</div>
+          <table><thead><tr><th>Strategy</th><th>Feats</th><th>ROC-AUC</th>
+            <th>PR-AUC</th></tr></thead><tbody>{brows}</tbody></table>
+          <div class="dim" style="font-size:12pt;line-height:1.35;margin-top:14pt">
+            The bank's eighteen expert-chosen columns beat all
+            {_n(bcv['all']['n_features'])}. With {_n(bd['positives'])} positives
+            against thousands of predictors, that is what theory predicts.</div>
+        </div>
+      </div>
+      <div class="stats" style="margin-bottom:14pt">
+        <div class="stat"><span class="v green" style="font-size:20pt">{bhold['roc_auc']:.4f}</span><span class="l">untouched holdout ROC-AUC</span></div>
+        <div class="stat"><span class="v blue" style="font-size:20pt">{bsel['roc_auc']:.4f}</span><span class="l">cross-validated estimate</span></div>
+        <div class="stat"><span class="v red" style="font-size:20pt">{bleak['multiple']:.1f}&times;</span><span class="l">PR-AUC inflation if leaked</span></div>
+        <div class="stat"><span class="v purple" style="font-size:20pt">{_n(bd['declared_columns'])}</span><span class="l">columns parsed by grammar</span></div>
+      </div>
+      <div class="callout" style="background:#2a1a0f;border-color:#ff8c42;
+           font-size:12.5pt;padding:11pt 16pt">
+        Measured on a stand-in table with their exact schema &mdash; their data was not
+        released when this was built. It proves the pipeline runs and does not flatter
+        itself. It is not model performance, and we will not present it as such.</div>''', 17, N))
+
+    # 18 limitations
     lims = "".join(
         f'<div style="display:flex;gap:18pt;margin-bottom:13pt">'
         f'<b class="orange" style="width:3.1in;font-size:13pt">{k}</b>'
@@ -627,9 +685,9 @@ def build(m: dict) -> str:
             ("Disparate impact unevaluated", "Minimum-KYC and shared-device features are predictive but correlate with lower-income households. Alert-rate parity must be measured before go-live.")])
     S.append(slide(head("Limitations",
         "Stated plainly, because hiding them helps nobody")
-        + f'<div class="body">{lims}</div>', 17, N))
+        + f'<div class="body">{lims}</div>', 18, N))
 
-    # 18 close
+    # 19 close
     S.append(slide(f'''
       <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
         <div style="font-size:32pt;font-weight:700;line-height:1.22;margin-bottom:16pt">
@@ -643,8 +701,8 @@ def build(m: dict) -> str:
           explanations specific enough to file and containment cautious enough to
           automate.</div>
         <div class="stats">
-          <div class="stat"><span class="v">85</span><span class="l">tests passing</span></div>
-          <div class="stat"><span class="v">~12.3k</span><span class="l">lines of code</span></div>
+          <div class="stat"><span class="v">{test_count()}</span><span class="l">tests passing</span></div>
+          <div class="stat"><span class="v">{code_lines_short()}</span><span class="l">lines of code</span></div>
           <div class="stat"><span class="v">9</span><span class="l">layers, all running</span></div>
           <div class="stat"><span class="v">0</span><span class="l">external ML frameworks</span></div>
         </div>

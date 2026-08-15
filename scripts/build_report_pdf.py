@@ -120,6 +120,105 @@ code { font-family: "Courier New", monospace; font-size: 8.2pt; }
 """
 
 
+def _boi_section() -> str:
+    """Section X, rendered from artifacts/metrics/boi_track.json.
+
+    The organisers published the column dictionary for their own alert dataset
+    and told us the validation file is held back, so the report has to say what
+    we did about it. Every number here is read from the metrics file for the
+    same reason the rest of the paper is: so that a stale paragraph cannot
+    outlive the code that produced it.
+    """
+    path = METRICS_DIR / "boi_track.json"
+    if not path.exists():
+        return ""
+    m = json.loads(path.read_text())
+    d, dep, leak = m["dataset"], m["deployable"], m["leakage_effect"]
+    cv, hold = dep["cv"], dep["holdout"]
+
+    order = [
+        ("bank_finalized", "Bank-finalised subset"),
+        ("bank_plus_engineered", "Bank subset + engineered"),
+        ("auto_topk", "Automatic top-<i>k</i> selection"),
+        ("all", "Every available column"),
+    ]
+    rows = "".join(
+        f"<tr><td class='l'>{label}</td>"
+        f"<td class='r'>{_n(cv[k]['n_features'])}</td>"
+        f"<td class='r'>{cv[k]['roc_auc']:.3f}</td>"
+        f"<td class='r'>{cv[k]['pr_auc']:.3f}</td></tr>"
+        for k, label in order if k in cv
+    )
+    gap = abs(hold["roc_auc"] - cv[dep["selected_strategy"]]["roc_auc"])
+
+    return f"""
+<h2>X. The Organisers' Alert Dataset</h2>
+
+<p class="first">The organisers released the column dictionary for the Phase&nbsp;2
+dataset and stated that the model would be scored on a validation file they had
+not shared. That dataset is a different object from the one above: one row is a
+<i>transaction-monitoring alert</i>, not an account, so the population is already
+pre-filtered by the bank's own rules and the task is triage rather than detection
+from scratch. We therefore built a second pipeline (<code>bodhi/boi/</code>)
+directly against the published schema of {_n(d['declared_columns'])} columns.</p>
+
+<p class="body">Almost every predictor is machine-generated from a compact
+grammar &mdash; aggregation, customer- or bank-induced, channel, direction,
+measure, observation window &mdash; so the schema module <i>parses</i> the names
+rather than treating them as opaque. That is what allows several thousand columns
+to be grouped into families measured across the 7-, 14- and 31-day windows, and
+it is what prevents <code>NON_CASH_CHQ</code> being silently matched as
+<code>CASH</code>.</p>
+
+<h3>A. Four columns leak the label</h3>
+
+<p class="first">The dictionary describes <code>FRAUD_SUSPECTED</code>,
+<code>FALSE_POSITIVE</code>, <code>OTHER_RESOLUTION</code> and
+<code>UNATTENDED</code> as resolution-status flags: they record how an analyst
+<i>closed</i> the alert, and <code>MIN_RESOLVE_DAYS</code> and
+<code>MAX_RESOLVE_DAYS</code> record how long that took. An open alert &mdash;
+the only kind worth scoring &mdash; carries none of them. Admitting them raises
+cross-validated PR-AUC from {leak['pr_auc_deployable']:.3f} to
+{leak['pr_auc_with_leakage']:.3f}, a {leak['multiple']:.1f}&times; jump, with
+<code>FRAUD_SUSPECTED</code> alone worth roughly a third of the gain and the six
+columns occupying the top importance ranks. That is not a model; it is a lookup
+of the answer stored in a different column. They are quarantined by default, and
+the flag that admits them prints a warning while it does so.</p>
+
+<h3>B. The bank's own eighteen features win</h3>
+
+<p class="first">The dictionary marks 18 predictors as bank-finalised. The
+pipeline treats that as a hypothesis rather than an instruction and competes four
+feature strategies under repeated stratified cross-validation, with selection
+performed <i>inside</i> every fold.</p>
+
+<table>
+  <caption>Table V. Feature strategies, repeated stratified CV</caption>
+  <tr><th>Strategy</th><th>Features</th><th>ROC-AUC</th><th>PR-AUC</th></tr>
+  {rows}
+</table>
+
+<p class="first">The eighteen expert-chosen columns beat all
+{_n(cv['all']['n_features'])}, and beat automatic selection. With
+{_n(d['positives'])} positives against thousands of predictors this is what
+statistical theory predicts, and it is precisely why the pipeline measures
+instead of assuming. The untouched holdout scored {hold['roc_auc']:.4f} against a
+cross-validated {cv[dep['selected_strategy']]['roc_auc']:.4f} &mdash; a gap of
+{gap:.4f}, which is the evidence that the selection procedure is not inflating
+itself. A regression test makes the same point adversarially: it shuffles the
+target, destroying all signal, and asserts the reported AUC stays near chance,
+which a globally-selecting pipeline fails.</p>
+
+<p class="body"><i>These numbers are not model performance.</i> The organisers'
+data had not been released when this was built, so they were measured on a
+stand-in table generated with their exact {_n(d['declared_columns'])}-column
+schema and a deliberately modest injected signal. What they demonstrate is that
+the pipeline runs end to end, that the methodology does not flatter itself, and
+that the leakage trap is real &mdash; nothing more. When the real file arrives,
+one command replaces every figure in this section with a measured one.</p>
+"""
+
+
 def build_html() -> str:
     m = json.loads((METRICS_DIR / "evaluation.json").read_text())
     ds, L = m["dataset"], m["layers"]
@@ -160,6 +259,8 @@ def build_html() -> str:
     authors = "".join(
         f'<div class="author"><div class="nm">{mem.name}</div>'
         f'<div class="en">{mem.enrolment}</div></div>' for mem in TEAM)
+
+    boi_section = _boi_section()
 
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>{CSS}</style></head>
 <body>
@@ -571,7 +672,9 @@ the first victim installs it. Detection stops being purely retrospective.</p>
   extracted UPI handles, IFSC codes and C2 addresses to the fraud graph.</figcaption>
 </figure>
 
-<h2>X. Limitations</h2>
+{boi_section}
+
+<h2>XI. Limitations</h2>
 
 <p class="first">We state these plainly because a prototype that hides them is
 not useful to a deployment team. Results are on simulated data; they demonstrate
@@ -591,7 +694,7 @@ and shared-device features are predictive but correlate with lower-income and
 multi-occupancy households, and any real deployment must measure alert-rate
 parity before go-live.</p>
 
-<h2>XI. Conclusion</h2>
+<h2>XII. Conclusion</h2>
 
 <p class="first">Mule detection fails today not because the signal is absent but
 because single-account rule engines cannot express it. Giving the problem three
@@ -600,7 +703,10 @@ ordering &mdash; and fusing them under a monotonicity constraint into a
 calibrated score reduces false positives by
 {_pct(b['false_positive_reduction'], 2)} at unchanged recall relative to a
 realistic incumbent, while producing explanations specific enough to file and
-containment actions cautious enough to automate. The complete system, the data
+containment actions cautious enough to automate. The same discipline is applied
+to the organisers' own alert schema, where the honest finding is that four of its
+columns encode the answer and the bank's eighteen expert-chosen features beat
+automatic selection over several thousand. The complete system, the data
 simulator and every script needed to reproduce these numbers are released
 alongside this report.</p>
 

@@ -16,12 +16,15 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from pptx import Presentation  # noqa: E402
 from pptx.dml.color import RGBColor  # noqa: E402
 from pptx.enum.shapes import MSO_SHAPE  # noqa: E402
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN  # noqa: E402
 from pptx.util import Emu, Inches, Pt  # noqa: E402
+
+from repo_stats import code_lines_short, test_count  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
     AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
@@ -271,7 +274,7 @@ def build(m: dict) -> Presentation:
 
     prs = Presentation()
     prs.slide_width, prs.slide_height = W, H
-    TOTAL = 18
+    TOTAL = 19
     n = 0
 
     def nxt():
@@ -839,7 +842,84 @@ def build(m: dict) -> Presentation:
          size=12.5, color=DIM, spacing=1.3)
     footer(s, nxt(), TOTAL)
 
-    # ---------------------------------------------------------- 17 limitations
+    # ---------------------------------------------------------- 17 their data
+    boi_path = METRICS_DIR / "boi_track.json"
+    if boi_path.exists():
+        bm = json.loads(boi_path.read_text())
+        bd, bdep, bleak = bm["dataset"], bm["deployable"], bm["leakage_effect"]
+        bcv, bhold = bdep["cv"], bdep["holdout"]
+
+        s = blank(prs)
+        y = header(s, "Their dataset", "Built on the schema they published",
+                   sub=f"{_n(bd['declared_columns'])} declared columns, one row per "
+                       f"alert. The names are machine-generated from a grammar, so we "
+                       f"parse them instead of treating them as opaque.")
+
+        # -- left: the leakage finding
+        p = panel(s, Inches(0.7), y + Inches(0.2), Inches(5.9), Inches(2.45),
+                  fill=PANEL2)
+        p.line.color.rgb = RED
+        p.line.width = Pt(1.5)
+        text(s, Inches(1.0), y + Inches(0.35), Inches(5.3), Inches(0.3),
+             "FOUR COLUMNS LEAK THE LABEL", size=11, bold=True, color=RED)
+        text(s, Inches(1.0), y + Inches(0.72), Inches(5.3), Inches(0.9),
+             "FRAUD_SUSPECTED · FALSE_POSITIVE · OTHER_RESOLUTION · UNATTENDED "
+             "are resolution-status flags — how an analyst closed the alert. "
+             "An open alert has none of them.",
+             size=12.5, color=DIM, spacing=1.3)
+        for i, (lab, val, col) in enumerate([
+                ("PR-AUC, quarantined (deployable)",
+                 f"{bleak['pr_auc_deployable']:.3f}", GREEN),
+                ("PR-AUC, resolution columns admitted",
+                 f"{bleak['pr_auc_with_leakage']:.3f}", RED)]):
+            yy = y + Inches(1.68) + Inches(0.38) * i
+            text(s, Inches(1.0), yy, Inches(3.9), Inches(0.32), lab,
+                 size=12, color=DIM)
+            text(s, Inches(4.9), yy, Inches(1.4), Inches(0.32), val, size=16,
+                 bold=True, color=col, font=MONO, align=PP_ALIGN.RIGHT)
+
+        # -- right: strategies measured, not assumed
+        order = [("bank_finalized", "Bank's 18 finalised"),
+                 ("bank_plus_engineered", "Bank + engineered"),
+                 ("auto_topk", "Automatic top-k"),
+                 ("all", "Every column")]
+        rows = [[label, _n(bcv[k]["n_features"]), f"{bcv[k]['roc_auc']:.3f}",
+                 f"{bcv[k]['pr_auc']:.3f}"] for k, label in order if k in bcv]
+        text(s, Inches(7.0), y + Inches(0.2), Inches(5.6), Inches(0.3),
+             "FOUR STRATEGIES, SELECTION INSIDE EVERY FOLD", size=11, bold=True,
+             color=FAINT)
+        table(s, Inches(7.0), y + Inches(0.58), Inches(5.6),
+              ["Strategy", "Feats", "ROC-AUC", "PR-AUC"], rows,
+              col_w=[Inches(2.3), Inches(1.0), Inches(1.15), Inches(1.15)],
+              row_h=Inches(0.38), size=12)
+        text(s, Inches(7.0), y + Inches(2.52), Inches(5.6), Inches(0.4),
+             f"The bank's eighteen beat all {_n(bcv['all']['n_features'])} columns. "
+             f"With {_n(bd['positives'])} positives against thousands of predictors, "
+             "that is what theory predicts.",
+             size=11.5, color=DIM, spacing=1.2)
+
+        xx = Inches(0.7)
+        for val, lab, col in [
+                (f"{bhold['roc_auc']:.4f}", "untouched holdout ROC-AUC", GREEN),
+                (f"{bcv[bdep['selected_strategy']]['roc_auc']:.4f}",
+                 "cross-validated estimate", ACCENT),
+                (f"{bleak['multiple']:.1f}×", "PR-AUC inflation if leaked", RED),
+                (f"{_n(bd['declared_columns'])}", "columns parsed by grammar", PURPLE)]:
+            stat(s, xx, Inches(4.9), Inches(2.9), val, lab, color=col,
+                 h=Inches(0.95), vsize=22)
+            xx += Inches(3.05)
+
+        band = panel(s, Inches(0.7), Inches(6.0), Inches(11.9), Inches(0.85),
+                     fill=RGBColor(0x2A, 0x1A, 0x0F), line=ORANGE)
+        text(s, Inches(1.0), Inches(6.16), Inches(11.3), Inches(0.55),
+             "Measured on a stand-in table with their exact schema — their data was not "
+             "released when this was built. It proves the pipeline runs and does not "
+             "flatter itself. It is not model performance, and we will not present it "
+             "as such.",
+             size=13, bold=True, color=TEXT, spacing=1.2)
+        footer(s, nxt(), TOTAL)
+
+    # ---------------------------------------------------------- 18 limitations
     s = blank(prs)
     y = header(s, "Limitations", "Stated plainly, because hiding them helps nobody")
     lims = [
@@ -865,7 +945,7 @@ def build(m: dict) -> Presentation:
         yy += Inches(0.78)
     footer(s, nxt(), TOTAL)
 
-    # ---------------------------------------------------------- 18 close
+    # ---------------------------------------------------------- 19 close
     s = blank(prs)
     glow = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.5), Inches(-1),
                               Inches(9), Inches(6))
@@ -886,7 +966,7 @@ def build(m: dict) -> Presentation:
          "automate.", size=15, color=DIM, spacing=1.35)
 
     xx = Inches(0.9)
-    for val, lab in [("85", "tests passing"), ("~12.3k", "lines of code"),
+    for val, lab in [(str(test_count()), "tests passing"), (code_lines_short(), "lines of code"),
                      ("9", "layers, all running"), ("0", "external ML frameworks")]:
         stat(s, xx, Inches(5.0), Inches(2.6), val, lab, h=Inches(1.05), vsize=26)
         xx += Inches(2.75)

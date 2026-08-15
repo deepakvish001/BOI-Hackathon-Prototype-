@@ -18,7 +18,7 @@ CyberShield Hackathon 2026 · Bank of India · **Problem Statement 2**
 | # | Deliverable | File | Notes |
 |---|---|---|---|
 | 1 | **Prototype report (PDF)** | [`docs/report/BODHI_Mule_Hunter_Prototype_Report.pdf`](docs/report/BODHI_Mule_Hunter_Prototype_Report.pdf) | 7 pages, two-column conference format |
-| 2 | **Presentation (PPTX)** | [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) | 18 slides, 16:9, editable |
+| 2 | **Presentation (PPTX)** | [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) | 19 slides, 16:9, editable |
 | 3 | **Presentation (PDF)** | [`docs/BODHI_Mule_Hunter_Deck.pdf`](docs/BODHI_Mule_Hunter_Deck.pdf) | same deck, for reviewers without PowerPoint |
 | 4 | **Prototype (code)** | this repository | `make setup && make all && make serve` |
 

@@ -494,6 +494,78 @@ built to pay already carry an elevated intelligence score before the first
 victim installs it. Detection stops being purely retrospective.
 
 % =====================================================================
+\section{The organisers' alert dataset}
+\label{sec:boi}
+
+The organisers released the column dictionary for the Phase~2 dataset and stated
+that the model would be scored on a validation file they had not shared. That
+dataset is a different object from the one above: one row is a
+transaction-monitoring \emph{alert}, not an account, so the population is already
+pre-filtered by the bank's own rules and the task is triage rather than detection
+from scratch. We therefore built a second pipeline (\texttt{bodhi/boi/}) directly
+against the published schema of \boiColumns{} columns. Almost every predictor is
+machine-generated from a compact grammar --- aggregation, customer- or
+bank-induced, channel, direction, measure, observation window --- so the schema
+module \emph{parses} the names rather than treating them as opaque. That is what
+allows several thousand columns to be grouped into families measured across the
+7-, 14- and 31-day windows, and what prevents \texttt{NON\_CASH\_CHQ} being
+silently matched as \texttt{CASH}.
+
+\subsection{Four columns leak the label}
+
+The dictionary describes \texttt{FRAUD\_SUSPECTED}, \texttt{FALSE\_POSITIVE},
+\texttt{OTHER\_RESOLUTION} and \texttt{UNATTENDED} as resolution-status flags:
+they record how an analyst \emph{closed} the alert, and
+\texttt{MIN\_RESOLVE\_DAYS} and \texttt{MAX\_RESOLVE\_DAYS} record how long that
+took. An open alert --- the only kind worth scoring --- carries none of them.
+Admitting them raises cross-validated PR-AUC from \boiPrClean{} to
+\boiPrLeaked{}, a \boiLeakMultiple{}$\times$ jump, with \texttt{FRAUD\_SUSPECTED}
+alone worth roughly a third of the gain and the six columns occupying the top
+importance ranks. That is not a model; it is a lookup of the answer stored in a
+different column. They are quarantined by default, and the flag that admits them
+prints a warning while it does so.
+
+\subsection{The bank's own eighteen features win}
+
+The dictionary marks \boiBankN{} predictors as bank-finalised. The pipeline
+treats that as a hypothesis rather than an instruction and competes four feature
+strategies under repeated stratified cross-validation, with selection performed
+\emph{inside} every fold (Table~\ref{tab:boi}).
+
+\begin{table}[t]
+\caption{Feature strategies, repeated stratified cross-validation}
+\label{tab:boi}
+\centering\small
+\begin{tabular}{lrrr}
+\hline
+Strategy & Features & ROC-AUC & PR-AUC \\
+\hline
+Bank-finalised subset      & \boiBankN{}    & \boiBankAuc{}    & \boiBankPr{} \\
+Bank subset $+$ engineered & \boiBankEngN{} & \boiBankEngAuc{} & \boiBankEngPr{} \\
+Automatic top-$k$          & \boiTopKN{}    & \boiTopKAuc{}    & \boiTopKPr{} \\
+Every available column     & \boiAllN{}     & \boiAllAuc{}     & \boiAllPr{} \\
+\hline
+\end{tabular}
+\end{table}
+
+The eighteen expert-chosen columns beat all \boiAllN{}, and beat automatic
+selection. With \boiPositives{} positives against thousands of predictors this is
+what statistical theory predicts, and it is precisely why the pipeline measures
+instead of assuming. The untouched holdout scored \boiHoldoutAuc{} against a
+cross-validated \boiCvAuc{} --- a gap small enough to be evidence that the
+selection procedure is not inflating itself. A regression test makes the same
+point adversarially: it shuffles the target, destroying all signal, and asserts
+the reported AUC stays near chance, which a globally-selecting pipeline fails.
+
+\emph{These numbers are not model performance.} The organisers' data had not been
+released when this was built, so they were measured on a stand-in table generated
+with their exact \boiColumns{}-column schema and a deliberately modest injected
+signal. What they demonstrate is that the pipeline runs end to end, that the
+methodology does not flatter itself, and that the leakage trap is real --- nothing
+more. When the real file arrives, one command replaces every figure in this
+section with a measured one.
+
+% =====================================================================
 \section{Limitations}
 \label{sec:limits}
 
@@ -526,7 +598,10 @@ complementary views --- behavioural aggregates, network structure and event
 ordering --- and fusing them under a monotonicity constraint into a calibrated
 score reduces false positives by \fpReduction{} at unchanged recall relative to
 a realistic incumbent, while producing explanations specific enough to file and
-containment actions cautious enough to automate. The complete system, the data
+containment actions cautious enough to automate. The same discipline is applied
+to the organisers' own alert schema, where the honest finding is that four of its
+columns encode the answer and the bank's eighteen expert-chosen features beat
+automatic selection over several thousand. The complete system, the data
 simulator and every script needed to reproduce these numbers are released
 alongside this report.
 

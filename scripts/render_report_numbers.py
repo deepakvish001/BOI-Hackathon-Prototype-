@@ -151,6 +151,34 @@ def main() -> int:
             f"\\newcommand{{\\decoy{key}FP}}{{{_pct(row['false_positive_rate'], 2)}}}",
         ]
 
+    # organisers' alert-dataset track
+    boi_path = METRICS_DIR / "boi_track.json"
+    if boi_path.exists():
+        bm = json.loads(boi_path.read_text())
+        bd, bdep, bleak = bm["dataset"], bm["deployable"], bm["leakage_effect"]
+        bcv, bhold = bdep["cv"], bdep["holdout"]
+        lines += [
+            "",
+            "% --- organisers' alert dataset (bodhi/boi) ---",
+            f"\\newcommand{{\\boiColumns}}{{{_int(bd['declared_columns'])}}}",
+            f"\\newcommand{{\\boiRows}}{{{_int(bd['rows'])}}}",
+            f"\\newcommand{{\\boiPositives}}{{{_int(bd['positives'])}}}",
+            f"\\newcommand{{\\boiStrategy}}{{\\texttt{{{bdep['selected_strategy'].replace('_', chr(92) + '_')}}}}}",
+            f"\\newcommand{{\\boiHoldoutAuc}}{{{_num(bhold['roc_auc'])}}}",
+            f"\\newcommand{{\\boiCvAuc}}{{{_num(bcv[bdep['selected_strategy']]['roc_auc'])}}}",
+            f"\\newcommand{{\\boiPrClean}}{{{_num(bleak['pr_auc_deployable'], 3)}}}",
+            f"\\newcommand{{\\boiPrLeaked}}{{{_num(bleak['pr_auc_with_leakage'], 3)}}}",
+            f"\\newcommand{{\\boiLeakMultiple}}{{{bleak['multiple']:.1f}}}",
+        ]
+        for key, macro in [("bank_finalized", "Bank"), ("bank_plus_engineered", "BankEng"),
+                           ("auto_topk", "TopK"), ("all", "All")]:
+            if key in bcv:
+                lines += [
+                    f"\\newcommand{{\\boi{macro}N}}{{{_int(bcv[key]['n_features'])}}}",
+                    f"\\newcommand{{\\boi{macro}Auc}}{{{_num(bcv[key]['roc_auc'], 3)}}}",
+                    f"\\newcommand{{\\boi{macro}Pr}}{{{_num(bcv[key]['pr_auc'], 3)}}}",
+                ]
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {len(lines)} lines of macros to {OUT}")

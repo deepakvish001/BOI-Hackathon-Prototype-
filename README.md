@@ -301,7 +301,7 @@ docs/                  architecture, demo script, model card, report
 - [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) — the organisers' alert dataset: schema, leakage, results
 - [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) — intended use, limits, failure modes
 - [`docs/report/`](docs/report/) — prototype report as **PDF**, **DOCX** and LaTeX
-- [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) — 18-slide deck (also as PDF)
+- [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) — 19-slide deck (also as PDF)
 
 Both documents are generated from `artifacts/metrics/evaluation.json` by
 `make submission`, so no number in them is typed by hand and they cannot drift
