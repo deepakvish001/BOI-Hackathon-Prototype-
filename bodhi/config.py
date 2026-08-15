@@ -55,6 +55,11 @@ TEAM_NAME = "Team BODHI"
 EVENT = "CyberShield Hackathon 2026 - Problem Statement 2"
 AFFILIATION = "In association with Bank of India and IIT Hyderabad"
 
+#: The single source repository. Every document links here and nowhere else, so
+#: the URL is defined once rather than typed into five builders.
+REPO_URL = "https://github.com/archirajpoot/Bodhi_Mule_Hunter"
+REPO_LABEL = "github.com/archirajpoot/Bodhi_Mule_Hunter"
+
 
 def team_inline(separator: str = "  |  ") -> str:
     """``Name (enrolment)`` for every member, joined on one line."""
@@ -256,6 +261,8 @@ __all__ = [
     "TEAM_NAME",
     "EVENT",
     "AFFILIATION",
+    "REPO_URL",
+    "REPO_LABEL",
     "TeamMember",
     "team_inline",
     "ROOT",

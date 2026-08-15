@@ -22,7 +22,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
+    TEAM, TEAM_NAME,
 )
 
 OUT_HTML = ROOT / "docs" / "report" / "_report.html"
@@ -106,6 +107,9 @@ body {
 .titleblock .author .nm { font-size: 10pt; }
 .titleblock .author .en { font-size: 8.5pt; font-family: "Courier New", monospace; }
 .titleblock .affil { font-size: 9pt; font-style: italic; margin: 0 0 1pt; }
+.titleblock .repo { font-size: 8.6pt; font-family: "Courier New", monospace;
+    margin: 3pt 0 0; }
+a { color: #000; text-decoration: underline; }
 .cols { column-count: 2; column-gap: 6.5mm; }
 h2 {
   font-size: 9.6pt; font-weight: bold; text-align: center; text-transform: uppercase;
@@ -297,6 +301,7 @@ def build_html() -> str:
   <div class="authors">{authors}</div>
   <p class="affil">{TEAM_NAME} &mdash; {EVENT}</p>
   <p class="affil">{AFFILIATION}</p>
+  <p class="repo">Source code: <a href="{REPO_URL}">{REPO_LABEL}</a></p>
 </div>
 
 <div class="kpi-band">
@@ -733,8 +738,8 @@ containment actions cautious enough to automate. The same discipline is applied
 to the organisers' own alert schema, where the honest finding is that four of its
 columns encode the answer and the bank's eighteen expert-chosen features beat
 automatic selection over several thousand. The complete system, the data
-simulator and every script needed to reproduce these numbers are released
-alongside this report.</p>
+simulator and every script needed to reproduce these numbers are released at
+<a href="{REPO_URL}">{REPO_LABEL}</a>.</p>
 
 <h2>References</h2>
 <div class="refs">

@@ -24,7 +24,8 @@ from docx.oxml.ns import qn  # noqa: E402
 from docx.shared import Inches, Pt  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
+    TEAM, TEAM_NAME,
 )
 
 OUT = ROOT / "docs" / "report" / "BODHI_Mule_Hunter_Prototype_Report.docx"
@@ -62,6 +63,42 @@ def _style(doc: Document) -> None:
         st.font.color.rgb = None
         st.paragraph_format.space_before = Pt(8)
         st.paragraph_format.space_after = Pt(4)
+
+
+def _hyperlink(paragraph, url: str, label: str, *, size=None):
+    """Append a real Word hyperlink to a paragraph.
+
+    python-docx has no API for this: a hyperlink needs a relationship in the
+    document part and a ``w:hyperlink`` element wrapping the run, so both are
+    built by hand. Writing the URL as plain text would look the same on paper
+    and be dead on screen, which is the opposite of the point.
+    """
+    r_id = paragraph.part.relate_to(
+        url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
+        is_external=True)
+    link = OxmlElement("w:hyperlink")
+    link.set(qn("r:id"), r_id)
+
+    run = OxmlElement("w:r")
+    props = OxmlElement("w:rPr")
+    for tag, attrs in (("w:color", {"w:val": "0563C1"}),
+                       ("w:u", {"w:val": "single"})):
+        el = OxmlElement(tag)
+        for k, v in attrs.items():
+            el.set(qn(k), v)
+        props.append(el)
+    if size is not None:
+        sz = OxmlElement("w:sz")
+        sz.set(qn("w:val"), str(int(size * 2)))
+        props.append(sz)
+    run.append(props)
+
+    text = OxmlElement("w:t")
+    text.text = label
+    run.append(text)
+    link.append(run)
+    paragraph._p.append(link)
+    return paragraph
 
 
 def _para(doc, text, *, align=None, bold=False, italic=False, size=None,
@@ -243,7 +280,11 @@ def main() -> int:
     _para(doc, f"{TEAM_NAME} — {EVENT}",
           align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
     _para(doc, AFFILIATION,
-          align=WD_ALIGN_PARAGRAPH.CENTER, size=10, space_after=12)
+          align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    repo = _para(doc, "Source code: ",
+                 align=WD_ALIGN_PARAGRAPH.CENTER, size=9, space_after=12)
+    repo.runs[0].font.name = "Consolas"
+    _hyperlink(repo, REPO_URL, REPO_LABEL, size=9)
 
     # ---- body is two-column ------------------------------------------------
     body = doc.add_section(WD_SECTION.CONTINUOUS)
@@ -687,7 +728,9 @@ def main() -> int:
           f"the answer and the bank's eighteen expert-chosen features beat "
           f"automatic selection over several thousand. "
           f"The complete system, the data simulator and every script "
-          f"needed to reproduce these numbers are released alongside this report.")
+          f"needed to reproduce these numbers are released at ")
+    _hyperlink(doc.paragraphs[-1], REPO_URL, REPO_LABEL)
+    doc.paragraphs[-1].add_run(".")
 
     doc.add_heading("REFERENCES", level=1)
     for i, ref in enumerate([

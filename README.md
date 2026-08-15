@@ -3,6 +3,8 @@
 **Real-time mule-account and suspicious-transaction detection, with explainable
 graph AI.**
 
+Source: [https://github.com/archirajpoot/Bodhi_Mule_Hunter](https://github.com/archirajpoot/Bodhi_Mule_Hunter)
+
 CyberShield Hackathon 2026 · Bank of India · Problem Statement 2 — *"Developing
 a solution having AI/ML capabilities for detecting suspicious transactions and
 mule accounts by ingesting financial transactions and/or fraud monitoring
