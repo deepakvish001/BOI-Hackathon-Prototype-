@@ -132,6 +132,37 @@ make submission   # rebuild the report (PDF/DOCX) and the deck (PPTX/PDF)
 
 ---
 
+## The organisers' alert dataset
+
+The Phase-2 evaluation is scored on a **held-back validation file** in the
+bank's own schema: 3,923 predictors, one row per transaction-monitoring alert.
+`bodhi/boi/` is built directly on their published data dictionary and runs on
+their file the moment it is released.
+
+Two findings from it are worth stating up front:
+
+**Four columns leak the label.** `FRAUD_SUSPECTED`, `FALSE_POSITIVE`,
+`OTHER_RESOLUTION` and `UNATTENDED` are *resolution-status* flags — how an
+analyst closed the alert. Including them lifts CV PR-AUC from **0.177 to
+0.972**, with `FRAUD_SUSPECTED` alone at 33% of total gain. An open alert has
+none of them, so they are quarantined by default.
+
+**The bank's own 18 finalised features beat all 3,923.** The dictionary marks
+them; the pipeline treats that as a hypothesis and tests it against automatic
+selection and the full column set under repeated cross-validation. The 18 win
+(PR-AUC 0.172 vs 0.105 for everything), which is what p ≫ n predicts.
+
+```bash
+python scripts/boi_train.py   --train  <their training file>
+python scripts/boi_predict.py --input  <their validation file> --out submission.csv
+```
+
+See [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md). Those numbers were measured on a
+stand-in table with their exact schema, because the data had not been released
+when this was written — they demonstrate the pipeline, not model performance.
+
+---
+
 ## Architecture
 
 Nine layers, each owned by a named agent (`GET /api/agents`).
@@ -267,6 +298,7 @@ docs/                  architecture, demo script, model card, report
 - [`SUBMISSION.md`](SUBMISSION.md) — submission index, problem-statement coverage
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — design and the reasoning
 - [`docs/DEMO.md`](docs/DEMO.md) — the 5-minute judging walkthrough
+- [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) — the organisers' alert dataset: schema, leakage, results
 - [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) — intended use, limits, failure modes
 - [`docs/report/`](docs/report/) — prototype report as **PDF**, **DOCX** and LaTeX
 - [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) — 18-slide deck (also as PDF)

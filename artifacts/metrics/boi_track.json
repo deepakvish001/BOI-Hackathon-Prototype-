@@ -1,0 +1,90 @@
+{
+  "note": "Measured on a stand-in table generated with the organisers' exact declared schema. The organisers' real data had not been released when this was run, so these numbers demonstrate the pipeline, not model performance.",
+  "dataset": {
+    "rows": 3200,
+    "declared_columns": 3924,
+    "columns_after_engineering": 5926,
+    "positives": 186,
+    "base_rate": 0.05813
+  },
+  "deployable": {
+    "selected_strategy": "bank_finalized",
+    "cv": {
+      "bank_finalized": {
+        "roc_auc": 0.71163,
+        "pr_auc": 0.17672,
+        "n_features": 18
+      },
+      "bank_plus_engineered": {
+        "roc_auc": 0.65074,
+        "pr_auc": 0.16303,
+        "n_features": 2028
+      },
+      "auto_topk": {
+        "roc_auc": 0.62232,
+        "pr_auc": 0.13671,
+        "n_features": 131
+      },
+      "all": {
+        "roc_auc": 0.61805,
+        "pr_auc": 0.11241,
+        "n_features": 5926
+      }
+    },
+    "holdout": {
+      "roc_auc": 0.7046221825042202,
+      "pr_auc": 0.15939783635327606,
+      "f1": 0.25806451612903225,
+      "positives": 54,
+      "flagged": 132,
+      "threshold": 0.3605
+    },
+    "n_features": 18
+  },
+  "with_resolution_columns": {
+    "selected_strategy": "all",
+    "cv": {
+      "bank_finalized": {
+        "roc_auc": 0.71163,
+        "pr_auc": 0.17672,
+        "n_features": 18
+      },
+      "bank_plus_engineered": {
+        "roc_auc": 0.64934,
+        "pr_auc": 0.1593,
+        "n_features": 2028
+      },
+      "auto_topk": {
+        "roc_auc": 0.99654,
+        "pr_auc": 0.97095,
+        "n_features": 134
+      },
+      "all": {
+        "roc_auc": 0.99622,
+        "pr_auc": 0.97168,
+        "n_features": 5932
+      }
+    },
+    "holdout": {
+      "roc_auc": 0.9980140998907755,
+      "pr_auc": 0.9618642203479575,
+      "f1": 0.8910891089108911,
+      "positives": 54,
+      "flagged": 47,
+      "threshold": 0.4848
+    }
+  },
+  "leakage_effect": {
+    "pr_auc_deployable": 0.17672,
+    "pr_auc_with_leakage": 0.97168,
+    "multiple": 5.5,
+    "columns": [
+      "FRAUD_SUSPECTED",
+      "OTHER_RESOLUTION",
+      "FALSE_POSITIVE",
+      "UNATTENDED",
+      "MIN_RESOLVE_DAYS",
+      "MAX_RESOLVE_DAYS"
+    ]
+  }
+}

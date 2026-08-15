@@ -28,6 +28,20 @@ evaluate: setup  ## Evaluate and write artifacts/metrics/evaluation.json
 sample-apk: setup  ## Build the APK fixtures used by the SHIELD demo
 	$(BIN)/python scripts/make_sample_apk.py
 
+boi-demo: setup  ## Alert-dataset track: stand-in data -> train -> predict
+	$(BIN)/python -c "from pathlib import Path; from bodhi.boi.synth import generate, SynthConfig, save; \
+	  d=Path('artifacts/boi_demo'); d.mkdir(parents=True, exist_ok=True); \
+	  save(generate(SynthConfig(n_rows=4000, seed=20260817)), d/'train.parquet'); \
+	  save(generate(SynthConfig(n_rows=1500, seed=99)).drop(columns=['FRAUD_TGT']), d/'validation.parquet'); \
+	  print('stand-in data written to', d)"
+	$(BIN)/python scripts/boi_train.py --train artifacts/boi_demo/train.parquet
+	$(BIN)/python scripts/boi_predict.py --model artifacts/boi \
+	  --input artifacts/boi_demo/validation.parquet
+
+boi-leakage: setup  ## Measure what the resolution-status columns are worth
+	$(BIN)/python scripts/boi_train.py --train artifacts/boi_demo/train.parquet \
+	  --allow-leakage --out artifacts/boi_leak
+
 demo: setup  ## Narrated end-to-end walkthrough in the terminal
 	$(BIN)/python scripts/demo_stream.py
 
@@ -61,7 +75,7 @@ test: setup  ## Run the test suite
 
 all: data train sample-apk evaluate  ## Full pipeline from scratch
 
-.PHONY: docs-setup screenshots report deck submission
+.PHONY: docs-setup screenshots report deck submission boi-demo boi-leakage
 
 clean:  ## Remove generated artefacts (keeps metrics and figures)
 	rm -rf artifacts/data artifacts/models artifacts/runtime

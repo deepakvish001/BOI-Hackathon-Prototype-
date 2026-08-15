@@ -29,6 +29,7 @@ Supporting documents:
 | [`README.md`](README.md) | overview, quick start, headline results |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | design decisions and the reasoning behind each |
 | [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) | intended use, limitations, failure modes, fairness gaps |
+| [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) | **the organisers' alert dataset** — schema, the leakage finding, how to run it on their file |
 | [`docs/DEMO.md`](docs/DEMO.md) | five-minute judging walkthrough |
 | [`artifacts/metrics/evaluation.json`](artifacts/metrics/evaluation.json) | every number quoted anywhere, in one file |
 
@@ -119,6 +120,7 @@ dashboard were broken, the deck would show it.
 | Real-time regulatory inputs/feeds | `bodhi/feeds/regulatory.py` (RBI / NPCI / CERT-In / FIU-IND) |
 | Cross-channel bank data | UPI, IMPS, NEFT, RTGS, AePS, ATM, card, wallet |
 | Explainability | `bodhi/explain/` — TreeSHAP, GNNExplainer, narrative |
+| **Model for the organisers' own dataset** | `bodhi/boi/` — their 3,923-column alert schema, leakage-safe |
 | Regulatory reporting | `bodhi/compliance/reports.py` — STR and CTR drafting |
 
 ---
