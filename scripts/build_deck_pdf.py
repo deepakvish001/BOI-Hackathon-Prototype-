@@ -21,7 +21,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from bodhi.config import FIGURE_DIR, METRICS_DIR, ROOT  # noqa: E402
+from bodhi.config import (  # noqa: E402
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+)
 
 OUT_HTML = ROOT / "docs" / "_deck.html"
 OUT_PDF = ROOT / "docs" / "BODHI_Mule_Hunter_Deck.pdf"
@@ -151,6 +153,10 @@ def build(m: dict) -> str:
     F = L["Fused (L7)"]
     S: list[str] = []
     N = 18
+    authors = "".join(
+        f'<div><div style="font-size:13pt;font-weight:600">{mem.name}</div>'
+        f'<div class="mono faint" style="font-size:10.5pt">{mem.enrolment}</div></div>'
+        for mem in TEAM)
 
     # 1 title
     S.append(slide(f'''
@@ -178,9 +184,9 @@ def build(m: dict) -> str:
           <div class="stat"><span class="v green">{b['precision_uplift_x']:.0f}&times;</span><span class="l">Precision uplift</span></div>
           <div class="stat"><span class="v blue">{lat['p50_ms']:.3f} ms</span><span class="l">Inline decision p50</span></div>
         </div>
-        <div style="font-size:12.5pt;color:#61708a;margin-top:22pt">
-          Team BODHI &nbsp;·&nbsp; CyberShield Hackathon 2026 &nbsp;·&nbsp;
-          Problem Statement 2 &nbsp;·&nbsp; Bank of India &amp; IIT Hyderabad</div>
+        <div style="display:flex;gap:26pt;margin-top:24pt">{authors}</div>
+        <div style="font-size:11.5pt;color:#61708a;margin-top:16pt">
+          {TEAM_NAME} &nbsp;·&nbsp; {EVENT} &nbsp;·&nbsp; {AFFILIATION}</div>
       </div>'''))
 
     # 2 problem
@@ -642,7 +648,8 @@ def build(m: dict) -> str:
           <div class="stat"><span class="v">9</span><span class="l">layers, all running</span></div>
           <div class="stat"><span class="v">0</span><span class="l">external ML frameworks</span></div>
         </div>
-        <div class="mono faint" style="font-size:12.5pt;margin-top:24pt">
+        <div style="display:flex;gap:26pt;margin-top:26pt">{authors}</div>
+        <div class="mono faint" style="font-size:12pt;margin-top:18pt">
           make setup &amp;&amp; make all &amp;&amp; make serve &nbsp;·&nbsp;
           github.com/deepakvish001/BOI-Hackathon-Prototype-</div>
       </div>'''))

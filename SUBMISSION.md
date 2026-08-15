@@ -1,7 +1,15 @@
 # Submission index — BODHI MULE HUNTER AI
 
 CyberShield Hackathon 2026 · Bank of India · **Problem Statement 2**
-Team BODHI
+
+### Team BODHI
+
+| Name | Enrolment number |
+|---|---|
+| Akshay Tiwari | `0246CS241037` |
+| Palak Vishwakarma | `0246AL241124` |
+| Archi Singh Rajput | `0246CS240174` |
+| Kartik Jain | `0246AL241094` |
 
 ---
 
@@ -77,6 +85,10 @@ make demo         # narrated terminal walkthrough of a real detected ring
 make test         # 85 tests, ~25 s
 make submission   # rebuild the report and the deck from the measured metrics
 ```
+
+`make submission` additionally installs `requirements-docs.txt` (python-pptx,
+python-docx, Playwright) and renders the PDFs with headless Chromium. The
+engine itself needs none of those.
 
 ---
 

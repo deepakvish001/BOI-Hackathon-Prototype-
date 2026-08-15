@@ -31,6 +31,37 @@ def ensure_dirs() -> None:
 
 
 # --------------------------------------------------------------------------
+# Team
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class TeamMember:
+    name: str
+    enrolment: str
+
+
+#: Single source of truth for authorship. The report (PDF/DOCX/LaTeX), the deck
+#: (PPTX/PDF), the README and SUBMISSION.md all render from this tuple, so the
+#: team list cannot end up different in one document from another.
+TEAM: tuple[TeamMember, ...] = (
+    TeamMember("Akshay Tiwari", "0246CS241037"),
+    TeamMember("Palak Vishwakarma", "0246AL241124"),
+    TeamMember("Archi Singh Rajput", "0246CS240174"),
+    TeamMember("Kartik Jain", "0246AL241094"),
+)
+
+TEAM_NAME = "Team BODHI"
+EVENT = "CyberShield Hackathon 2026 - Problem Statement 2"
+AFFILIATION = "In association with Bank of India and IIT Hyderabad"
+
+
+def team_inline(separator: str = "  |  ") -> str:
+    """``Name (enrolment)`` for every member, joined on one line."""
+    return separator.join(f"{m.name} ({m.enrolment})" for m in TEAM)
+
+
+# --------------------------------------------------------------------------
 # Risk bands  (mirrors the scoring table in the platform proposal)
 # --------------------------------------------------------------------------
 
@@ -221,6 +252,12 @@ CHANNELS = ("UPI", "IMPS", "NEFT", "RTGS", "AEPS", "ATM", "CARD", "WALLET")
 CASHOUT_CHANNELS = ("ATM", "AEPS")
 
 __all__ = [
+    "TEAM",
+    "TEAM_NAME",
+    "EVENT",
+    "AFFILIATION",
+    "TeamMember",
+    "team_inline",
     "ROOT",
     "ARTIFACTS",
     "DATA_DIR",

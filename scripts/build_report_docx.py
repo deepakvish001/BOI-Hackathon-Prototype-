@@ -23,7 +23,9 @@ from docx.oxml import OxmlElement  # noqa: E402
 from docx.oxml.ns import qn  # noqa: E402
 from docx.shared import Inches, Pt  # noqa: E402
 
-from bodhi.config import FIGURE_DIR, METRICS_DIR, ROOT  # noqa: E402
+from bodhi.config import (  # noqa: E402
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+)
 
 OUT = ROOT / "docs" / "report" / "BODHI_Mule_Hunter_Prototype_Report.docx"
 
@@ -131,10 +133,26 @@ def main() -> int:
               align=WD_ALIGN_PARAGRAPH.CENTER, bold=True, size=20)
     t.paragraph_format.space_after = Pt(10)
 
-    _para(doc, "Team BODHI", align=WD_ALIGN_PARAGRAPH.CENTER, size=11)
-    _para(doc, "CyberShield Hackathon 2026 — Problem Statement 2",
+    # Author block: IEEE lays these out in columns, so a 1xN table keeps the
+    # names and enrolment numbers aligned without hard tabs.
+    at = doc.add_table(rows=2, cols=len(TEAM))
+    for i, mem in enumerate(TEAM):
+        for row, value, size, mono in ((0, mem.name, 11, False),
+                                       (1, mem.enrolment, 9.5, True)):
+            cell = at.rows[row].cells[i]
+            cell.text = ""
+            para = cell.paragraphs[0]
+            para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            para.paragraph_format.space_after = Pt(0)
+            run = para.add_run(value)
+            run.font.size = Pt(size)
+            if mono:
+                run.font.name = "Consolas"
+    doc.add_paragraph().paragraph_format.space_after = Pt(2)
+
+    _para(doc, f"{TEAM_NAME} — {EVENT}",
           align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
-    _para(doc, "In association with Bank of India and IIT Hyderabad",
+    _para(doc, AFFILIATION,
           align=WD_ALIGN_PARAGRAPH.CENTER, size=10, space_after=12)
 
     # ---- body is two-column ------------------------------------------------

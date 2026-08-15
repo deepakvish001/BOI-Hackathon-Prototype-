@@ -31,15 +31,18 @@ sample-apk: setup  ## Build the APK fixtures used by the SHIELD demo
 demo: setup  ## Narrated end-to-end walkthrough in the terminal
 	$(BIN)/python scripts/demo_stream.py
 
-screenshots: setup  ## Capture the live dashboard (server must be running on :8090)
+docs-setup: setup  ## Install the extra dependencies the document builders need
+	$(BIN)/pip install -q -r requirements-docs.txt
+
+screenshots: docs-setup  ## Capture the live dashboard (server must be running on :8090)
 	$(BIN)/python scripts/capture_screenshots.py
 
-report: setup  ## Build the prototype report (PDF + DOCX + LaTeX macros)
+report: docs-setup  ## Build the prototype report (PDF + DOCX + LaTeX macros)
 	$(BIN)/python scripts/render_report_numbers.py
 	$(BIN)/python scripts/build_report_docx.py
 	$(BIN)/python scripts/build_report_pdf.py
 
-deck: setup  ## Build the submission deck (PPTX + PDF)
+deck: docs-setup  ## Build the submission deck (PPTX + PDF)
 	$(BIN)/python scripts/build_deck.py
 	$(BIN)/python scripts/build_deck_pdf.py
 
@@ -58,7 +61,7 @@ test: setup  ## Run the test suite
 
 all: data train sample-apk evaluate  ## Full pipeline from scratch
 
-.PHONY: screenshots report deck submission
+.PHONY: docs-setup screenshots report deck submission
 
 clean:  ## Remove generated artefacts (keeps metrics and figures)
 	rm -rf artifacts/data artifacts/models artifacts/runtime

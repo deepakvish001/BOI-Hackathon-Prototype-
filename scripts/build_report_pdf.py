@@ -21,7 +21,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from bodhi.config import FIGURE_DIR, METRICS_DIR, ROOT  # noqa: E402
+from bodhi.config import (  # noqa: E402
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+)
 
 OUT_HTML = ROOT / "docs" / "report" / "_report.html"
 OUT_PDF = ROOT / "docs" / "report" / "BODHI_Mule_Hunter_Prototype_Report.pdf"
@@ -72,7 +74,11 @@ body {
 }
 .titleblock { column-span: all; text-align: center; margin-bottom: 9pt; }
 .titleblock h1 { font-size: 16.5pt; font-weight: bold; margin: 0 0 7pt; line-height: 1.2; }
-.titleblock .authors { font-size: 10.5pt; margin: 0 0 1pt; }
+.titleblock .authors { display: flex; justify-content: center; gap: 12mm;
+    margin: 7pt 0 6pt; }
+.titleblock .author { text-align: center; }
+.titleblock .author .nm { font-size: 10pt; }
+.titleblock .author .en { font-size: 8.5pt; font-family: "Courier New", monospace; }
 .titleblock .affil { font-size: 9pt; font-style: italic; margin: 0 0 1pt; }
 .cols { column-count: 2; column-gap: 6.5mm; }
 h2 {
@@ -151,15 +157,19 @@ def build_html() -> str:
         for k, t in sorted(typ.items(), key=lambda kv: kv[1]["recall"])
     )
 
+    authors = "".join(
+        f'<div class="author"><div class="nm">{mem.name}</div>'
+        f'<div class="en">{mem.enrolment}</div></div>' for mem in TEAM)
+
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>{CSS}</style></head>
 <body>
 
 <div class="titleblock">
   <h1>BODHI MULE HUNTER AI: Explainable Graph-Temporal Detection<br>
       of Money-Mule Accounts and Suspicious Transactions</h1>
-  <p class="authors">Team BODHI</p>
-  <p class="affil">CyberShield Hackathon 2026 &mdash; Problem Statement 2</p>
-  <p class="affil">In association with Bank of India and IIT Hyderabad</p>
+  <div class="authors">{authors}</div>
+  <p class="affil">{TEAM_NAME} &mdash; {EVENT}</p>
+  <p class="affil">{AFFILIATION}</p>
 </div>
 
 <div class="kpi-band">

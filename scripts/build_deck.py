@@ -23,7 +23,9 @@ from pptx.enum.shapes import MSO_SHAPE  # noqa: E402
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN  # noqa: E402
 from pptx.util import Emu, Inches, Pt  # noqa: E402
 
-from bodhi.config import FIGURE_DIR, METRICS_DIR, ROOT  # noqa: E402
+from bodhi.config import (  # noqa: E402
+    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, ROOT, TEAM, TEAM_NAME,
+)
 
 OUT = ROOT / "docs" / "BODHI_Mule_Hunter_Deck.pptx"
 OUT_PDF = ROOT / "docs" / "BODHI_Mule_Hunter_Deck.pdf"
@@ -313,9 +315,16 @@ def build(m: dict) -> Presentation:
         stat(s, x, Inches(4.7), Inches(2.24), val, lab, color=col)
         x += Inches(2.36)
 
-    text(s, Inches(0.9), Inches(6.35), Inches(11.5), Inches(0.4),
-         "Team BODHI   ·   CyberShield Hackathon 2026   ·   Problem Statement 2   ·   "
-         "Bank of India & IIT Hyderabad", size=13, color=FAINT)
+    x = Inches(0.9)
+    for mem in TEAM:
+        text(s, x, Inches(6.12), Inches(2.6), Inches(0.28), mem.name,
+             size=13, bold=True)
+        text(s, x, Inches(6.4), Inches(2.6), Inches(0.26), mem.enrolment,
+             size=10.5, color=FAINT, font=MONO)
+        x += Inches(2.75)
+    text(s, Inches(0.9), Inches(6.86), Inches(11.5), Inches(0.35),
+         f"{TEAM_NAME}   ·   {EVENT}   ·   {AFFILIATION}",
+         size=11, color=FAINT)
     nxt()
 
     # ---------------------------------------------------------- 2 problem
@@ -882,10 +891,17 @@ def build(m: dict) -> Presentation:
         stat(s, xx, Inches(5.0), Inches(2.6), val, lab, h=Inches(1.05), vsize=26)
         xx += Inches(2.75)
 
-    text(s, Inches(0.9), Inches(6.4), Inches(11.5), Inches(0.5),
+    x = Inches(0.9)
+    for mem in TEAM:
+        text(s, x, Inches(6.28), Inches(2.6), Inches(0.28), mem.name,
+             size=12.5, bold=True)
+        text(s, x, Inches(6.55), Inches(2.6), Inches(0.26), mem.enrolment,
+             size=10, color=FAINT, font=MONO)
+        x += Inches(2.75)
+    text(s, Inches(0.9), Inches(6.98), Inches(11.5), Inches(0.35),
          "make setup && make all && make serve      ·      "
          "github.com/deepakvish001/BOI-Hackathon-Prototype-",
-         size=13, color=FAINT, font=MONO)
+         size=11, color=FAINT, font=MONO)
     nxt()
 
     return prs

@@ -1,0 +1,12 @@
+# Dependencies for building the submission artefacts (`make submission`).
+# Kept separate from requirements.txt: the engine itself needs none of these,
+# and a bank deploying the service should not have to install a browser.
+
+python-pptx>=0.6.23      # the editable .pptx deck
+python-docx>=1.1.0       # the Word report, in the organisers' template
+pillow>=10.0             # image dimensions, for aspect-correct slide placement
+playwright>=1.40         # drives Chromium to screenshot the live dashboard
+pymupdf>=1.24            # PDF verification in tests/test_submission_docs.py
+
+# The PDFs are rendered by headless Chromium, which Playwright installs:
+#   python -m playwright install chromium
