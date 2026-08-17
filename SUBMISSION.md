@@ -32,6 +32,7 @@ Supporting documents:
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | design decisions and the reasoning behind each |
 | [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) | intended use, limitations, failure modes, fairness gaps |
 | [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) | **the organisers' alert dataset** — schema, the leakage finding, how to run it on their file |
+| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | **deploying it live** — Docker, VM + systemd + nginx, managed platforms, measured RAM and boot times |
 | [`docs/DEMO.md`](docs/DEMO.md) | five-minute judging walkthrough |
 | [`artifacts/metrics/evaluation.json`](artifacts/metrics/evaluation.json) | every number quoted anywhere, in one file |
 

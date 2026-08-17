@@ -23,6 +23,8 @@ COPY bodhi/ ./bodhi/
 COPY dashboard/ ./dashboard/
 COPY scripts/ ./scripts/
 COPY tests/ ./tests/
+COPY data/ ./data/
+
 COPY Makefile pyproject.toml README.md ./
 
 # Bake in the simulated bank and the trained models so the container starts

@@ -6,6 +6,7 @@ scikit-learn>=1.4
 xgboost>=2.0
 networkx>=3.2
 pyarrow>=14.0        # parquet round-trip for the simulated tables
+openpyxl>=3.1        # bodhi/boi reads the organisers' .xlsx dictionary
 fastapi>=0.110
 uvicorn[standard]>=0.27
 pydantic>=2.6
