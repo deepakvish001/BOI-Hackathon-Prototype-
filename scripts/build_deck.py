@@ -254,11 +254,25 @@ def picture(slide, path: Path, x, y, w=None, h=None, *, border=True):
 
 
 def footer(slide, n, total, note=""):
-    text(slide, Inches(0.7), H - Inches(0.5), Inches(9), Inches(0.3),
+    text(slide, Inches(0.7), H - Inches(0.5), Inches(6.4), Inches(0.3),
          note or "BODHI MULE HUNTER AI  ·  CyberShield Hackathon 2026  ·  Problem Statement 2",
          size=9.5, color=FAINT)
-    text(slide, W - Inches(1.6), H - Inches(0.5), Inches(0.9), Inches(0.3),
-         f"{n} / {total}", size=9.5, color=FAINT, align=PP_ALIGN.RIGHT)
+    # The repository sits in the running footer so it is reachable from
+    # whichever slide a reviewer happens to be on, not only the last one.
+    tb = text(slide, W - Inches(6.0), H - Inches(0.5), Inches(5.3), Inches(0.3),
+              "", size=9.5, color=FAINT, font=MONO, align=PP_ALIGN.RIGHT)
+    para = tb.text_frame.paragraphs[0]
+    link = para.add_run()
+    link.text = REPO_LABEL
+    link.font.size = Pt(9.5)
+    link.font.name = MONO
+    link.font.color.rgb = FAINT
+    link.hyperlink.address = REPO_URL
+    tail = para.add_run()
+    tail.text = f"   ·   {n} / {total}"
+    tail.font.size = Pt(9.5)
+    tail.font.name = MONO
+    tail.font.color.rgb = FAINT
 
 
 # --------------------------------------------------------------------------
@@ -326,9 +340,17 @@ def build(m: dict) -> Presentation:
         text(s, x, Inches(6.4), Inches(2.6), Inches(0.26), mem.enrolment,
              size=10.5, color=FAINT, font=MONO)
         x += Inches(2.75)
-    text(s, Inches(0.9), Inches(6.86), Inches(11.5), Inches(0.35),
-         f"{TEAM_NAME}   ·   {EVENT}   ·   {AFFILIATION}",
-         size=11, color=FAINT)
+    tb = text(s, Inches(0.9), Inches(6.86), Inches(11.5), Inches(0.3),
+              f"{TEAM_NAME}   ·   {EVENT}   ·   {AFFILIATION}",
+              size=11, color=FAINT)
+    tb = text(s, Inches(0.9), Inches(7.1), Inches(11.5), Inches(0.3), "",
+              size=10.5, color=FAINT, font=MONO)
+    link = tb.text_frame.paragraphs[0].add_run()
+    link.text = REPO_LABEL
+    link.font.size = Pt(10.5)
+    link.font.name = MONO
+    link.font.color.rgb = ACCENT
+    link.hyperlink.address = REPO_URL
     nxt()
 
     # ---------------------------------------------------------- 2 problem

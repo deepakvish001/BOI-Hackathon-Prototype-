@@ -162,8 +162,12 @@ def slide(inner: str, n: int | None = None, total: int = 19,
     if n is not None:
         label = note or ("BODHI MULE HUNTER AI · CyberShield Hackathon 2026 · "
                          "Problem Statement 2")
+        # The repository sits in the running footer so it is reachable from
+        # whichever slide a reviewer happens to be reading.
         foot = (f'<div class="foot"><span>{label}</span>'
-                f'<span>{n} / {total}</span></div>')
+                f'<span class="mono"><a href="{REPO_URL}" '
+                f'style="color:#61708a">{REPO_LABEL}</a>'
+                f'&nbsp;&nbsp;·&nbsp;&nbsp;{n} / {total}</span></div>')
     return f'<section class="slide">{inner}{foot}</section>'
 
 
@@ -217,6 +221,8 @@ def build(m: dict) -> str:
         <div style="display:flex;gap:26pt;margin-top:24pt">{authors}</div>
         <div style="font-size:11.5pt;color:#61708a;margin-top:16pt">
           {TEAM_NAME} &nbsp;·&nbsp; {EVENT} &nbsp;·&nbsp; {AFFILIATION}</div>
+        <div class="mono" style="font-size:11pt;margin-top:7pt">
+          <a href="{REPO_URL}" style="color:#4da3ff">{REPO_LABEL}</a></div>
       </div>'''))
 
     # 2 problem

@@ -52,12 +52,15 @@ def _chrome() -> str:
 
 
 def _stamp_pdf(path: Path, title: str) -> None:
-    """Give the rendered PDF proper document properties.
+    """Give the rendered PDF proper properties and a per-page source footer.
 
-    Chromium names the file after the HTML it rendered ("_report.html"), which
-    is what a reader sees in their PDF viewer's title bar. Rewriting the
-    metadata is cosmetic but it is the difference between a submission that
-    looks assembled and one that looks exported.
+    Two jobs, both needing the file after Chromium has written it. Chromium
+    names the document after the HTML it rendered ("_report.html"), which is
+    what a reader sees in their viewer's title bar. And a running footer is not
+    expressible in print CSS that Chromium implements --- there is no support
+    for ``position: running()`` --- so the page number and the repository line
+    are drawn onto every page here, with a real link annotation over the URL so
+    it is clickable from any page rather than only from the title block.
     """
     try:
         import fitz  # PyMuPDF
@@ -73,6 +76,37 @@ def _stamp_pdf(path: Path, title: str) -> None:
         "creator": TEAM_NAME,
         "producer": TEAM_NAME,
     })
+
+    grey = (0.35, 0.35, 0.35)
+    blue = (0.05, 0.28, 0.65)
+    lead = "Source code: "
+    for i, page in enumerate(doc, start=1):
+        w, h = page.rect.width, page.rect.height
+        base = h - 26          # inside the 18 mm bottom margin
+        size = 7.2
+
+        lead_w = fitz.get_text_length(lead, fontname="helv", fontsize=size)
+        url_w = fitz.get_text_length(REPO_LABEL, fontname="cour", fontsize=size)
+        x = (w - (lead_w + url_w)) / 2
+
+        page.insert_text((x, base), lead, fontname="helv", fontsize=size,
+                         color=grey)
+        page.insert_text((x + lead_w, base), REPO_LABEL, fontname="cour",
+                         fontsize=size, color=blue)
+        # The clickable region has to cover the glyphs, which sit above the
+        # baseline, so the rectangle is offset upwards rather than centred on it.
+        page.insert_link({
+            "kind": fitz.LINK_URI, "uri": REPO_URL,
+            "from": fitz.Rect(x + lead_w, base - size, x + lead_w + url_w,
+                              base + 2),
+        })
+        page.draw_line(fitz.Point(x + lead_w, base + 1.1),
+                       fitz.Point(x + lead_w + url_w, base + 1.1),
+                       color=blue, width=0.35)
+
+        page.insert_text((w / 2 - 10, base + 10), f"{i} / {doc.page_count}",
+                         fontname="helv", fontsize=size, color=grey)
+
     doc.saveIncr()
     doc.close()
 

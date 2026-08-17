@@ -763,6 +763,18 @@ def main() -> int:
         r = p.add_run(f"[{i}]  {ref}")
         r.font.size = Pt(8)
 
+    # A running footer, so the repository is reachable from any page rather
+    # than only from the title block. Every section needs its own: Word does
+    # not inherit a footer across a section break.
+    for section in doc.sections:
+        section.footer.is_linked_to_previous = False
+        para = section.footer.paragraphs[0]
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = para.add_run("Source code: ")
+        run.font.size = Pt(8)
+        run.font.name = "Times New Roman"
+        _hyperlink(para, REPO_URL, REPO_LABEL, size=8)
+
     # python-docx otherwise stamps itself as the author of the file.
     cp = doc.core_properties
     cp.title = ("BODHI MULE HUNTER AI: Explainable Graph-Temporal Detection of "
