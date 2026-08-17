@@ -266,6 +266,67 @@ through a tunnel. Warm it *before* you share the link.
 
 ---
 
+---
+
+## Why not Vercel (or Netlify, or Cloudflare Workers)
+
+Asked often enough to answer here. **The engine cannot run on Vercel.** Not a
+configuration problem — four hard limits, each independently fatal:
+
+**1. Bundle size.** A Vercel serverless function is capped at **250 MB
+unzipped**. Measured, from this project's own virtualenv:
+
+| Package | Unzipped |
+|---|---|
+| xgboost | **228 MB** |
+| pyarrow | 156 MB |
+| scipy | 113 MB |
+| pandas | 76 MB |
+| scikit-learn | 50 MB |
+| numpy | 45 MB |
+| matplotlib | 36 MB |
+| networkx | 19 MB |
+
+`xgboost` alone nearly fills the budget; the runtime set is roughly 720 MB.
+
+**2. Memory.** Boot peaks at 1.13 GB for the small world and 3.09 GB for the
+large one. Vercel functions top out around 3 GB on paid plans and default to
+far less.
+
+**3. Execution time.** Every cold invocation rebuilds the whole world, because
+there is no process to keep it in. That is 23–73 s of work against a function
+timeout measured in tens of seconds. Even where the timeout allows it, *every*
+cold request pays it.
+
+**4. State.** The filesystem is read-only apart from an ephemeral `/tmp`, and
+each invocation is a fresh process. The append-only audit log, the casebook and
+the kill-switch rate limiter all assume a long-lived process with a writable
+directory. Alerts raised in one invocation would not exist in the next.
+
+Vercel is a platform for stateless request handlers and static frontends. This
+is a stateful, memory-resident analytics engine. It needs a container or a VM —
+Options A, B and C above.
+
+### What *can* go on Vercel: the dashboard only
+
+`dashboard/` is plain HTML, CSS and one JS file — a legitimate static deploy,
+with the API hosted on Render, Fly or a VM. Two changes are needed first, and
+neither is wired today:
+
+1. **An API base URL.** `dashboard/app.js` calls `fetch('/api/…')` in 15 places
+   through one `api()` helper, so a single configurable `API_BASE` prepended
+   inside that helper covers all of them — plus the two direct `fetch()` calls
+   for the STR text and the sample APK.
+2. **CORS on the server.** There is no `CORSMiddleware` in `bodhi/api/main.py`,
+   because today the dashboard is same-origin with the API. A browser on
+   `*.vercel.app` calling a different host will be blocked until the API allows
+   that origin explicitly.
+
+Unless a `vercel.app` URL is specifically wanted, this split is strictly worse
+than serving both from one container: two deploys to keep in step, a CORS
+surface that did not need to exist, and no benefit — the dashboard is a handful
+of static files that any of the other options already serves.
+
 ## Before you expose it publicly
 
 **There is no authentication on any endpoint.** That is deliberate for a
