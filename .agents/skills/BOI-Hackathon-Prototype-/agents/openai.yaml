@@ -1,0 +1,6 @@
+interface:
+  display_name: "BOI Hackathon Prototype"
+  short_description: "Repo-specific patterns and workflows for BOI-Hackathon-Prototype-"
+  default_prompt: "Use the BOI-Hackathon-Prototype- repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
