@@ -302,6 +302,7 @@ docs/                  architecture, demo script, model card, report
 - [`docs/DEMO.md`](docs/DEMO.md) — the 5-minute judging walkthrough
 - [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) — the organisers' alert dataset: schema, leakage, results
 - [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — running it live: Docker, VM, PaaS, measured RAM and boot times
+- [`docs/PRESENTATION_SCRIPT.md`](docs/PRESENTATION_SCRIPT.md) — 30-minute spoken walkthrough of the whole system (Hinglish)
 - [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) — intended use, limits, failure modes
 - [`docs/report/`](docs/report/) — prototype report as **PDF**, **DOCX** and LaTeX
 - [`docs/BODHI_Mule_Hunter_Deck.pptx`](docs/BODHI_Mule_Hunter_Deck.pptx) — 19-slide deck (also as PDF)
