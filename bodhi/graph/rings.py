@@ -97,7 +97,7 @@ def _induced_subgraph(graph: FinancialGraph, seeds: np.ndarray,
     g.add_nodes_from(nodes)
     for s in nodes:
         nbrs, w, et = graph.neighbours(int(s))
-        for t, weight, kind in zip(nbrs, w, et):
+        for t, weight, kind in zip(nbrs, w, et, strict=True):
             t = int(t)
             if t in nodes and s < t:
                 g.add_edge(s, t, weight=float(weight), etype=int(kind))

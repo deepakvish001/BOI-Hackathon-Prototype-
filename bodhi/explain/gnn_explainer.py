@@ -85,7 +85,7 @@ def _local_adjacency(graph: FinancialGraph, nodes: np.ndarray,
         if nbr.size > fanout:
             sel = np.argsort(-w)[:fanout]
             nbr, w, et = nbr[sel], w[sel], et[sel]
-        for t, wt, tp in zip(nbr, w, et):
+        for t, wt, tp in zip(nbr, w, et, strict=True):
             j = pos[int(t)]
             W[i, j] = float(wt)
             E[i, j] = int(tp)

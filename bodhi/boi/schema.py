@@ -269,7 +269,7 @@ class DataDictionary:
     @property
     def descriptions(self) -> dict[str, str]:
         return dict(zip(self.table["Variable Name"].astype(str),
-                        self.table["Description"].astype(str)))
+                        self.table["Description"].astype(str), strict=True))
 
     def modelling_columns(self, allow_leakage: bool = False) -> list[str]:
         """Predictors a deployable model is allowed to see."""

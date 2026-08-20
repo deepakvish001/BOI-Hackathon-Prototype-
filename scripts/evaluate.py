@@ -270,7 +270,7 @@ def lead_time(engine: MuleHunterEngine, sim, threshold: float,
     first_ticket: dict[str, float] = {}
     if len(fa):
         rep = pd.to_datetime(fa["reported_at"], utc=True).astype("int64") / 1e9
-        for account, ts in zip(fa["beneficiary_account"].astype(str), rep):
+        for account, ts in zip(fa["beneficiary_account"].astype(str), rep, strict=True):
             if account not in first_ticket or ts < first_ticket[account]:
                 first_ticket[account] = float(ts)
 

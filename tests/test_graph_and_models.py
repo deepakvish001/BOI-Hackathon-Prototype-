@@ -11,6 +11,7 @@ from bodhi.graph.builder import EDGE_TYPES, MAX_SHARED_FANOUT, topology_features
 from bodhi.models.fusion import RiskFusion
 from bodhi.models.graphsage import build_propagation
 from bodhi.models.temporal import N_EVENT_FEATURES, build_sequences
+from itertools import pairwise
 
 # ------------------------------------------------------------------ graph
 
@@ -28,7 +29,7 @@ def test_graph_is_symmetric_and_well_formed(graph):
 def test_adjacency_is_undirected(graph):
     """Every edge must appear in both directions for message passing."""
     row = np.repeat(np.arange(graph.n_nodes), np.diff(graph.indptr))
-    forward = set(zip(row.tolist(), graph.indices.tolist()))
+    forward = set(zip(row.tolist(), graph.indices.tolist(), strict=True))
     backward = {(b, a) for a, b in forward}
     assert forward == backward
 
@@ -129,7 +130,7 @@ def test_flow_tracing_respects_time(graph, sim):
         for p in paths:
             times = [h["ts"] for h in p["hops"]]
             assert times == sorted(times), "non-monotone path emitted"
-            for a, b in zip(times, times[1:]):
+            for a, b in pairwise(times):
                 assert b - a <= 72 * 3600 + 1
             traced += 1
     assert traced > 0, "no paths traced at all"

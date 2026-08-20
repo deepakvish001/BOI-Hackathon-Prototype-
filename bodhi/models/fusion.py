@@ -149,7 +149,7 @@ class RiskFusion:
         if self.weights is None:
             return dict(self.config.prior_weights)
         return {name: round(float(w), 4)
-                for name, w in zip(STACK_FEATURES, self.weights)}
+                for name, w in zip(STACK_FEATURES, self.weights, strict=True)}
 
     # -- inference ---------------------------------------------------------
 
