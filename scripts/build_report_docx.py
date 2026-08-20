@@ -24,8 +24,15 @@ from docx.oxml.ns import qn  # noqa: E402
 from docx.shared import Inches, Pt  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
-    TEAM, TEAM_NAME,
+    AFFILIATION,
+    EVENT,
+    FIGURE_DIR,
+    METRICS_DIR,
+    REPO_LABEL,
+    REPO_URL,
+    ROOT,
+    TEAM,
+    TEAM_NAME,
 )
 
 OUT = ROOT / "docs" / "report" / "BODHI_Mule_Hunter_Prototype_Report.docx"

@@ -6,7 +6,7 @@ the time a victim installs the trojan, the beneficiary accounts it was built to
 pay have already been marked.
 """
 
-from bodhi.shield.apk_triage import APKReport, DANGEROUS_PERMISSIONS, triage_apk
+from bodhi.shield.apk_triage import DANGEROUS_PERMISSIONS, APKReport, triage_apk
 from bodhi.shield.ioc_bridge import ingest_iocs, iocs_from_report
 
 __all__ = [

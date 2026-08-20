@@ -25,8 +25,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from repo_stats import code_lines_short, test_count  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
-    TEAM, TEAM_NAME,
+    AFFILIATION,
+    EVENT,
+    FIGURE_DIR,
+    METRICS_DIR,
+    REPO_LABEL,
+    REPO_URL,
+    ROOT,
+    TEAM,
+    TEAM_NAME,
 )
 
 OUT_HTML = ROOT / "docs" / "_deck.html"

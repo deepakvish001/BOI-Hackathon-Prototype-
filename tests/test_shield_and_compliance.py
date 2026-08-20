@@ -20,7 +20,6 @@ from bodhi.shield.apk_triage import parse_axml_strings
 from bodhi.shield.ioc_bridge import ingest_iocs
 from bodhi.shield.synth import build_axml, build_benign_apk, build_sample_apk
 
-
 # ------------------------------------------------------------------ AXML
 
 

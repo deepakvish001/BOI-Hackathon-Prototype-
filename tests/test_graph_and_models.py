@@ -10,8 +10,7 @@ from bodhi.graph import build_graph, detect_rings, trace_flows
 from bodhi.graph.builder import EDGE_TYPES, MAX_SHARED_FANOUT, topology_features
 from bodhi.models.fusion import RiskFusion
 from bodhi.models.graphsage import build_propagation
-from bodhi.models.temporal import build_sequences, N_EVENT_FEATURES
-
+from bodhi.models.temporal import N_EVENT_FEATURES, build_sequences
 
 # ------------------------------------------------------------------ graph
 
