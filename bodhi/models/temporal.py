@@ -280,7 +280,7 @@ class TemporalGraphNetwork:
         train_idx: np.ndarray,
         val_idx: np.ndarray | None = None,
         verbose: bool = False,
-    ) -> "TemporalGraphNetwork":
+    ) -> TemporalGraphNetwork:
         c = self.config
         rng = np.random.default_rng(c.random_state)
         X = np.asarray(X, dtype=np.float64)
@@ -392,7 +392,7 @@ class TemporalGraphNetwork:
                  **self.params)
 
     @classmethod
-    def load(cls, path: Path) -> "TemporalGraphNetwork":
+    def load(cls, path: Path) -> TemporalGraphNetwork:
         data = np.load(Path(path).with_suffix(".npz"))
         cfg = TemporalConfig(
             hidden_dim=int(data["hidden_dim"][0]),

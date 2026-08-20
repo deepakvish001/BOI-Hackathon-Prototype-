@@ -15,7 +15,7 @@ import pandas as pd
 import pytest
 
 from bodhi.boi import features as bx
-from bodhi.boi.dataset import load_alerts, leakage_present
+from bodhi.boi.dataset import leakage_present, load_alerts
 from bodhi.boi.model import BOIConfig, BOIModel
 from bodhi.boi.schema import (
     LEAKAGE_COLUMNS,
@@ -25,7 +25,6 @@ from bodhi.boi.schema import (
     parse_feature,
 )
 from bodhi.boi.synth import SynthConfig, generate
-
 
 # --------------------------------------------------------------------------
 # schema

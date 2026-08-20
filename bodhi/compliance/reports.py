@@ -19,8 +19,8 @@ from typing import Any
 
 import pandas as pd
 
-from bodhi.config import REGULATORY
 from bodhi.compliance.pii import redact_text
+from bodhi.config import REGULATORY
 from bodhi.schemas import Alert
 
 

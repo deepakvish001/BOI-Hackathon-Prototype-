@@ -39,7 +39,7 @@ class XGBScreener:
         X_val: pd.DataFrame | None = None,
         y_val: np.ndarray | None = None,
         verbose: bool = False,
-    ) -> "XGBScreener":
+    ) -> XGBScreener:
         c = self.config
         self.feature_names = list(X.columns)
         y = np.asarray(y).astype(int)
@@ -145,7 +145,7 @@ class XGBScreener:
         }))
 
     @classmethod
-    def load(cls, path: Path) -> "XGBScreener":
+    def load(cls, path: Path) -> XGBScreener:
         path = Path(path)
         obj = cls()
         booster = xgb.Booster()

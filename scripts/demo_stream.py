@@ -16,7 +16,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import pandas as pd  # noqa: E402
 
 from bodhi.config import DATA_DIR, MODEL_DIR  # noqa: E402
 from bodhi.data.generator import load  # noqa: E402
@@ -136,7 +135,7 @@ def main() -> int:
         {"xgb": float(row["score_xgb"]), "graph": float(row["score_graph"]),
          "temporal": float(row["score_temporal"]), "intel": float(row["score_intel"])},
         amount_at_risk=detail["amount_at_risk"])
-    print(f"  Proposed : FULL_FREEZE")
+    print("  Proposed : FULL_FREEZE")
     print(f"  Applied  : {dec.action.value}")
     print(f"  Reason   : {dec.reason}")
     if dec.refusals:
@@ -180,7 +179,7 @@ def main() -> int:
     print(f"  Rings detected       : {len(result.rings)}")
     print(f"  Alerts raised        : {len(engine.generate_alerts(limit=500))}")
     print(f"  Full re-score        : {result.elapsed_ms:.0f} ms")
-    print(f"  Inline decision p50  : sub-millisecond (see `make evaluate`)")
+    print("  Inline decision p50  : sub-millisecond (see `make evaluate`)")
     return 0
 
 

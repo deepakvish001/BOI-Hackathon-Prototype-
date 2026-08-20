@@ -22,8 +22,15 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
-    TEAM, TEAM_NAME,
+    AFFILIATION,
+    EVENT,
+    FIGURE_DIR,
+    METRICS_DIR,
+    REPO_LABEL,
+    REPO_URL,
+    ROOT,
+    TEAM,
+    TEAM_NAME,
 )
 
 OUT_HTML = ROOT / "docs" / "report" / "_report.html"

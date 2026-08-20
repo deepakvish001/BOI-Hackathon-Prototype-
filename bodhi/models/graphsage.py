@@ -26,7 +26,7 @@ from pathlib import Path
 import numpy as np
 import scipy.sparse as sp
 
-from bodhi.config import GraphSAGEConfig, MODELS
+from bodhi.config import MODELS, GraphSAGEConfig
 from bodhi.graph.builder import FinancialGraph
 
 
@@ -175,7 +175,7 @@ class GraphSAGE:
         train_idx: np.ndarray,
         val_idx: np.ndarray | None = None,
         verbose: bool = False,
-    ) -> "GraphSAGE":
+    ) -> GraphSAGE:
         c = self.config
         rng = np.random.default_rng(c.random_state)
 
@@ -267,7 +267,7 @@ class GraphSAGE:
         )
 
     @classmethod
-    def load(cls, path: Path, config: GraphSAGEConfig | None = None) -> "GraphSAGE":
+    def load(cls, path: Path, config: GraphSAGEConfig | None = None) -> GraphSAGE:
         data = np.load(Path(path).with_suffix(".npz"))
         cfg = config or GraphSAGEConfig(
             hidden_dims=tuple(int(x) for x in data["hidden_dims"]),

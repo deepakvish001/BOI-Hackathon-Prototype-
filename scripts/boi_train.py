@@ -25,9 +25,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import numpy as np  # noqa: E402
 
 from bodhi.boi import features as bx  # noqa: E402
-from bodhi.boi.dataset import load_alerts, leakage_present  # noqa: E402
+from bodhi.boi.dataset import leakage_present, load_alerts  # noqa: E402
 from bodhi.boi.model import BOIConfig, BOIModel  # noqa: E402
-from bodhi.boi.schema import LEAKAGE_COLUMNS, load_dictionary  # noqa: E402
+from bodhi.boi.schema import load_dictionary  # noqa: E402
 from bodhi.config import ARTIFACTS, ensure_dirs  # noqa: E402
 
 OUT_DIR = ARTIFACTS / "boi"

@@ -46,7 +46,6 @@ from bodhi.config import (  # noqa: E402
 from bodhi.data.generator import load  # noqa: E402
 from bodhi.engine.pipeline import MuleHunterEngine  # noqa: E402
 
-
 # --------------------------------------------------------------------------
 # metric helpers
 # --------------------------------------------------------------------------

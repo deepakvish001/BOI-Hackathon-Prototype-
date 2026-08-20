@@ -23,12 +23,18 @@ from pptx.dml.color import RGBColor  # noqa: E402
 from pptx.enum.shapes import MSO_SHAPE  # noqa: E402
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN  # noqa: E402
 from pptx.util import Emu, Inches, Pt  # noqa: E402
-
 from repo_stats import code_lines_short, test_count  # noqa: E402
 
 from bodhi.config import (  # noqa: E402
-    AFFILIATION, EVENT, FIGURE_DIR, METRICS_DIR, REPO_LABEL, REPO_URL, ROOT,
-    TEAM, TEAM_NAME,
+    AFFILIATION,
+    EVENT,
+    FIGURE_DIR,
+    METRICS_DIR,
+    REPO_LABEL,
+    REPO_URL,
+    ROOT,
+    TEAM,
+    TEAM_NAME,
 )
 
 OUT = ROOT / "docs" / "BODHI_Mule_Hunter_Deck.pptx"

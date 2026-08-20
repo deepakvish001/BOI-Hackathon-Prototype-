@@ -28,7 +28,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from sklearn.isotonic import IsotonicRegression
 
-from bodhi.config import FusionConfig, MODELS
+from bodhi.config import MODELS, FusionConfig
 
 LAYERS: tuple[str, ...] = ("xgb", "graph", "temporal", "intel")
 
@@ -78,7 +78,7 @@ class RiskFusion:
     # -- training ---------------------------------------------------------
 
     def fit(self, scores: dict[str, np.ndarray], y: np.ndarray,
-            calibrate: bool = True) -> "RiskFusion":
+            calibrate: bool = True) -> RiskFusion:
         """Fit non-negative blend weights, then calibrate.
 
         The weights are constrained to be **non-negative**. This is not a
@@ -223,7 +223,7 @@ class RiskFusion:
         path.with_suffix(".json").write_text(json.dumps(payload))
 
     @classmethod
-    def load(cls, path: Path) -> "RiskFusion":
+    def load(cls, path: Path) -> RiskFusion:
         payload = json.loads(Path(path).with_suffix(".json").read_text())
         obj = cls()
         if payload.get("weights") is not None:

@@ -239,7 +239,7 @@ class BOIModel:
 
     # -- fit ----------------------------------------------------------------
 
-    def fit(self, X: pd.DataFrame, y, verbose: bool = True) -> "BOIModel":
+    def fit(self, X: pd.DataFrame, y, verbose: bool = True) -> BOIModel:
         t0 = time.perf_counter()
         y = np.asarray(y).astype(int)
         self.base_rate = float(y.mean())
@@ -400,7 +400,7 @@ class BOIModel:
         return d
 
     @classmethod
-    def load(cls, directory: Path) -> "BOIModel":
+    def load(cls, directory: Path) -> BOIModel:
         d = Path(directory)
         meta = json.loads((d / "boi_model.json").read_text())
         obj = cls()

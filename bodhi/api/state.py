@@ -17,7 +17,7 @@ import pandas as pd
 from bodhi.actions.casebook import Casebook
 from bodhi.actions.killswitch import KillSwitch
 from bodhi.compliance.audit import AuditLog
-from bodhi.config import DATA_DIR, DataConfig, MODEL_DIR, RUNTIME_DIR, ensure_dirs
+from bodhi.config import DATA_DIR, MODEL_DIR, RUNTIME_DIR, DataConfig, ensure_dirs
 from bodhi.engine.pipeline import MuleHunterEngine
 from bodhi.feeds.ncrp import NCRPConnector
 from bodhi.feeds.regulatory import RegulatoryConnector

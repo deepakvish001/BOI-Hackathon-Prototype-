@@ -11,7 +11,6 @@ from bodhi.config import ALERT_THRESHOLD, band_for
 from bodhi.explain.gnn_explainer import explain_node
 from bodhi.schemas import AlertStatus
 
-
 # ------------------------------------------------------------------ training
 
 
@@ -79,6 +78,7 @@ def test_intel_evidence_mask_ignores_the_recency_sentinel():
     intelligence' - the bug this mask exists to prevent.
     """
     import pandas as pd
+
     from bodhi.features.engineering import has_intelligence
 
     intel = pd.DataFrame({
@@ -216,6 +216,7 @@ def test_engine_beats_the_rule_baseline_at_equal_recall(trained, sim):
 @pytest.fixture(scope="module")
 def client(sim):
     from fastapi.testclient import TestClient
+
     import bodhi.api.state as state_mod
     from bodhi.api.main import app
     from bodhi.engine import MuleHunterEngine

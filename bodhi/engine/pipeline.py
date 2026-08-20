@@ -110,7 +110,7 @@ class MuleHunterEngine:
         fraud_alerts: pd.DataFrame | None = None,
         iocs: pd.DataFrame | None = None,
         regulatory: pd.DataFrame | None = None,
-    ) -> "MuleHunterEngine":
+    ) -> MuleHunterEngine:
         self.accounts = accounts.reset_index(drop=True)
         self.transactions = transactions.sort_values("ts").reset_index(drop=True)
         self.fraud_alerts = fraud_alerts
@@ -585,7 +585,7 @@ class MuleHunterEngine:
         return d
 
     @classmethod
-    def load(cls, directory: Path | None = None) -> "MuleHunterEngine":
+    def load(cls, directory: Path | None = None) -> MuleHunterEngine:
         d = Path(directory or MODEL_DIR)
         obj = cls()
         obj.xgb = XGBScreener.load(d / "xgb")
