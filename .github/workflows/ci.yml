@@ -21,6 +21,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyarrow
+          # Install the project itself so `bodhi` resolves from site-packages.
+          # Without this, `pytest` (the console script) cannot import it —
+          # the working directory is not on sys.path — and neither can the
+          # `python scripts/*.py` steps below, whose sys.path[0] is scripts/.
+          pip install -e . --no-deps
 
       - name: Run the test suite
         run: pytest tests -q
