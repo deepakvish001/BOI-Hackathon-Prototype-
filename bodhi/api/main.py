@@ -283,7 +283,7 @@ def account_graph(
     from bodhi.graph.builder import EDGE_TYPES
     for v in node_set:
         nbr, w, et = graph.neighbours(v)
-        for t, kind in zip(nbr, et):
+        for t, kind in zip(nbr, et, strict=True):
             t = int(t)
             if t in node_set and v < t and int(kind) == EDGE_TYPES["DEVICE"]:
                 edges.append({"source": ids[v], "target": ids[t],

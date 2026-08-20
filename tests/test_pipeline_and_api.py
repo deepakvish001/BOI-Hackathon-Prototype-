@@ -50,7 +50,7 @@ def test_score_columns_are_well_formed(trained):
         assert (v >= 0).all() and (v <= 1).all(), f"{col} left [0,1]"
     risk = s["risk_score"].to_numpy()
     assert (risk >= 0).all() and (risk <= 100).all()
-    assert all(band_for(r) == b for r, b in zip(risk, s["band"]))
+    assert all(band_for(r) == b for r, b in zip(risk, s["band"], strict=True))
 
 
 def test_risk_score_is_monotone_in_probability(trained):

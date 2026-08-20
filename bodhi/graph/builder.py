@@ -154,7 +154,7 @@ def build_graph(
             e_t = np.concatenate([e_t, np.full(s.size, etype, dtype=np.int8)])
         if col == "device_id":
             sub = tx.loc[tx[col].notna(), ["src_account", col]].drop_duplicates()
-            for acct, dev in zip(sub["src_account"].to_numpy(), sub[col].to_numpy()):
+            for acct, dev in zip(sub["src_account"].to_numpy(), sub[col].to_numpy(), strict=True):
                 account_devices.setdefault(str(acct), []).append(str(dev))
 
     order = np.lexsort((e_dst, e_src))
@@ -189,7 +189,7 @@ def _shared_identifier_edges(
     ends = np.concatenate([starts[1:], [ident.size]])
 
     s_list, d_list = [], []
-    for a, b in zip(starts, ends):
+    for a, b in zip(starts, ends, strict=True):
         members = codes[a:b]
         k = members.size
         if k < 2 or k > MAX_SHARED_FANOUT:
