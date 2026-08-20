@@ -34,6 +34,7 @@ Supporting documents:
 | [`docs/BOI_TRACK.md`](docs/BOI_TRACK.md) | **the organisers' alert dataset** — schema, the leakage finding, how to run it on their file |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | **deploying it live** — Docker, VM + systemd + nginx, managed platforms, measured RAM and boot times |
 | [`docs/PRESENTATION_SCRIPT.md`](docs/PRESENTATION_SCRIPT.md) | **30-minute presentation script** — the whole system explained end to end, in Hinglish, every number sourced from the metrics file |
+| [`docs/DEEP_DIVE_SCRIPT.md`](docs/DEEP_DIVE_SCRIPT.md) | **complete deep dive** — 15 chapters covering every module, hyperparameter and design decision, plus the bugs we hit and how we found them |
 | [`docs/DEMO.md`](docs/DEMO.md) | five-minute judging walkthrough |
 | [`artifacts/metrics/evaluation.json`](artifacts/metrics/evaluation.json) | every number quoted anywhere, in one file |
 
