@@ -144,7 +144,10 @@ def list_alerts(
     min_score: float = Query(0.0, ge=0, le=100),
     state: RuntimeState = Depends(get_state),
 ) -> dict[str, Any]:
-    st = AlertStatus(status) if status else None
+    try:
+        st = AlertStatus(status) if status else None
+    except ValueError:
+        raise HTTPException(400, f"invalid status {status!r}") from None
     items = state.casebook.queue(status=st, limit=limit, min_score=min_score)
     return _jsonable({
         "count": len(items),
