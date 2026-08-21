@@ -266,6 +266,17 @@ def test_alert_lifecycle(client):
     assert client.get("/api/alerts/NOPE").status_code == 404
 
 
+def test_invalid_alert_status_is_a_clean_400(client):
+    """AlertStatus(status) raises ValueError on a bad string. Both routes that
+    parse a status query param must turn that into a 400, not an unhandled
+    500 — list_alerts previously did not."""
+    alerts = client.get("/api/alerts?status=bogus")
+    assert alerts.status_code == 400
+
+    resolve = client.post("/api/alerts/whatever/resolve?status=bogus")
+    assert resolve.status_code == 400
+
+
 def test_account_endpoints(client):
     account = client.get("/api/alerts?limit=1").json()["alerts"][0]["account_id"]
     d = client.get(f"/api/accounts/{account}").json()
